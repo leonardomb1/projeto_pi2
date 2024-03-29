@@ -1,0 +1,11 @@
+# Arquivos gerados pelo sistema operacional
+.DS_Store
+
+# Dependências instaladas pelo npm
+node_modules/
+
+# Migrations
+src/migrations
+
+# Arquivo de ambiente
+.env
