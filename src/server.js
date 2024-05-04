@@ -3,11 +3,15 @@ import sqlite3 from "sqlite3";
 const sqlite = sqlite3.verbose();
 const app = express();
 let sql;
-const db = new sqlite.Database("./main.db", sqlite.OPEN_READWRITE, (err) => {
+const db = new sqlite.Database("../src/main.db", sqlite.OPEN_READWRITE, (err) => {
   if (err) return console.error(err);
 })
 
 app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.json({meu: 10, seu:1, nosso:11})
+})
 
 app.post('/quote', (req, res) => {
   try {
