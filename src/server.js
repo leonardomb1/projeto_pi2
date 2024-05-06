@@ -1,36 +1,17 @@
 import express from "express"
-import sqlite3 from "sqlite3";
-const sqlite = sqlite3.verbose();
-const app = express();
-let sql;
-const db = new sqlite.Database("../src/main.db", sqlite.OPEN_READWRITE, (err) => {
-  if (err) return console.error(err);
+
+const app = express()
+
+const port = 8080
+
+app.get('/',(req,res) => {
+    res.status(200).send('Olá mundo!')
 })
 
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.json({meu: 10, seu:1, nosso:11})
+app.get('/usuarios',(req,res)=>{
+    res.json({nome: 'Teste', idade: 30})
 })
 
-app.post('/quote', (req, res) => {
-  try {
-    const { NM_TESTE } = req.body;
-    sql = "INSERT INTO TESTE(NM_teste) VALUES(?);"
-    db.run(sql, [NM_TESTE], (err) => {
-      if(err) return res.json({ status: 300, sucess: false, error: err });
-
-      console.log("Sucesso", NM_TESTE);
-    })
-    return res.json({
-      status: 200,
-      success: true,
-    });
-  } catch (error) {
-    return res.json ({
-      status: 400,
-      success: false,
-    });
-  }
+app.listen(port, () => {
+    console.log(`Server running on ${port}`); 
 })
-app.listen(3000);
