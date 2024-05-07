@@ -1,9 +1,9 @@
-import express from 'express'
-import ContatoController from '../controllers/contato.controller'
+import { Router } from 'express'
+import SetorController from '../controller/setores.controller.js'
 
-const router = express.Router()
+const router = Router()
 
-// Rotas de contato
-router.get('/', ContatoController.index())
+
+router.get('/setor', SetorController.index)
 
 export default router

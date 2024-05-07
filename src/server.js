@@ -1,17 +1,11 @@
 import express from "express"
+import routes from "./routes/routes.js"
 
 const app = express()
+const PORT = 8080
+app.use(routes)
 
-const port = 8080
-
-app.get('/',(req,res) => {
-    res.status(200).send('Olá mundo!')
+app.listen(PORT, () =>{
+    console.log(`Escutando na Porta ${PORT}`)
 })
 
-app.get('/usuarios',(req,res)=>{
-    res.json({nome: 'Teste', idade: 30})
-})
-
-app.listen(port, () => {
-    console.log(`Server running on ${port}`); 
-})
