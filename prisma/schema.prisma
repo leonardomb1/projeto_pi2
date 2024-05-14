@@ -15,5 +15,5 @@ datasource db {
 
 model Setores {
   id_setor Int @id @default(autoincrement())
-  nm_setor String @unique
+  nome_setor String @unique
 }
