@@ -25,7 +25,7 @@ export default class FuncionarioController {
     }
 
     try {
-      const createdFuncionarios = await Analise.create({
+      const createdFuncionarios = await Funcionario.create({
         data: {
             nome_funcionario,
             id_setor
@@ -45,7 +45,7 @@ export default class FuncionarioController {
   static async getOneById(req, res) {
     const { idFuncionario } = req.params
     let retorno = {}
-    const funcionarios = await Analise.findUnique({
+    const funcionarios = await Funcionario.findUnique({
       where: {
         id_funcionario: Number(idFuncionario)
       }
@@ -97,7 +97,7 @@ export default class FuncionarioController {
     let retorno = {}
 
     try {
-      const funcionarios = await Setor.findUnique({
+      const funcionarios = await Funcionario.findUnique({
         where: {
             id_funcionario: Number(idFuncionario)
         }
@@ -108,7 +108,7 @@ export default class FuncionarioController {
         return res.status(404).json(retorno)
       }
 
-      Setor.delete(funcionarios)
+      Funcionario.delete(funcionarios)
       retorno = new returnClass("Funcionario deletado com sucesso", 204, true, false, undefined)
       return res.status(204).json(retorno)
     } catch (error) {

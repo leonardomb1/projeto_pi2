@@ -49,7 +49,7 @@ model Cartoes {
 }
 
 model Analistas {
-  id_analista Int @unique
+  id_analista Int @unique 
   id_setor_analise Int?
   funcionario Funcionarios @relation(fields: [id_analista], references: [id_funcionario])
   setor_analise Setores? @relation(fields: [id_setor_analise], references: [id_setor])

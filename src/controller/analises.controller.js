@@ -99,7 +99,7 @@ export default class AnaliseController {
     let retorno = {}
 
     try {
-      const analises = await Setor.findUnique({
+      const analises = await Analise.findUnique({
         where: {
             id_analise: Number(idAnalise)
         }
@@ -110,7 +110,7 @@ export default class AnaliseController {
         return res.status(404).json(retorno)
       }
 
-      Setor.delete(analises)
+      Analise.delete(analises)
       retorno = new returnClass("Setor deletado com sucesso", 204, true, false, undefined)
       return res.status(204).json(retorno)
     } catch (error) {
