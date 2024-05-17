@@ -1,12 +1,12 @@
-import Setor from "../models/setores.model.js";
+import Analista from "../models/analistas.model.js";
 import returnClass from "../types/returnClass.js";
 
-export default class SetorController {
+export default class AnalistaController {
   static async index(req, res) {
-    const setores = await Setor.findMany()
+    const analistas = await Analista.findMany()
     let retorno = {}
-    if (setores) {
-      retorno = new returnClass("OK", 200, true, false, setores)
+    if (analistas) {
+      retorno = new returnClass("OK", 200, true, false, analistas)
       res.status(200).json(retorno)
     }
     else {
@@ -16,22 +16,23 @@ export default class SetorController {
   }
 
   static async create(req, res) {
-    const { nome_setor } = req.body;
+    const { idAnalista, idSetor } = req.body;
     let retorno = {};
 
-    if (!req.body || !req.body.nome_setor) {
-      const retorno = new returnClass("Campo 'nome_setor' é obrigatório", 400, false, true, undefined);
+    if (!req.body || !req.body.idAnalista) {
+      const retorno = new returnClass("Necessário informar campo obrigatório!", 400, false, true, undefined);
       return res.status(400).json(retorno);
     }
 
     try {
-      const createdSetor = await Setor.create({
+      const createdAnalista = await Analista.create({
         data: {
-          nome_setor
+            idAnalista,
+            idSetor
         }
       });
 
-      retorno = new returnClass("Sucesso!", 201, true, false, createdSetor);
+      retorno = new returnClass("Sucesso!", 201, true, false, createdAnalista);
       return res.status(201).json(retorno);
     } catch (error) {
       console.log(error);
@@ -42,16 +43,16 @@ export default class SetorController {
 
 
   static async getOneById(req, res) {
-    const { idSetor } = req.params
+    const { idAnalista } = req.params
     let retorno = {}
-    const setor = await Setor.findUnique({
+    const analista = await Setor.findUnique({
       where: {
-        id_setor: Number(idSetor)
+        id_analista: Number(idAnalista)
       }
     })
 
-    if (setor) {
-      retorno = new returnClass("OK", 200, true, false, setor)
+    if (analista) {
+      retorno = new returnClass("OK", 200, true, false, analista)
       res.status(200).json(retorno)
     }
     else {
@@ -61,27 +62,27 @@ export default class SetorController {
   }
 
   static async update(req, res) {
-    const { idSetor } = req.params
-    const { nome_setor } = req.body
+    const { idAnalista } = req.params
+    const { idSetor } = req.body
     let retorno = {}
     try {
-      const setor = await Setor.findUnique({
+      const analista = await Analista.findUnique({
         where: {
-          id_setor: Number(idSetor)
+          id_analista: Number(idAnalista)
         }
       })
 
-      if (!setor) {
-        retorno = new returnClass("Setor inexistente!", 404, false, true, undefined)
+      if (!analista) {
+        retorno = new returnClass("Analista inexistente!", 404, false, true, undefined)
         return res.status(404).json(retorno)
       }
 
-      const updatedSetor = {
-        ...setor,
-        nome_setor
+      const updatedAnalista = {
+        ...analista,
+        idSetor
       }
 
-      retorno = new returnClass("Setor alterado com sucesso!", 200, true, false, updatedSetor)
+      retorno = new returnClass("Analista alterado com sucesso!", 200, true, false, updatedAnalista)
       return res.status(200).json(retorno)
     } catch (error) {
       console.log(error)
@@ -91,23 +92,23 @@ export default class SetorController {
   }
 
   static async delete(req, res) {
-    const { idSetor } = req.params
+    const { idAnalista } = req.params
     let retorno = {}
 
     try {
-      const setor = await Setor.findUnique({
+      const analista = await Analista.findUnique({
         where: {
-          id_setor: Number(idSetor)
+          id_analista: Number(idAnalista)
         }
       })
 
-      if (!setor) {
-        retorno = new returnClass("Setor inexistente!", 404, false, true, undefined)
+      if (!analista) {
+        retorno = new returnClass("Analista inexistente!", 404, false, true, undefined)
         return res.status(404).json(retorno)
       }
 
-      Setor.delete(setor)
-      retorno = new returnClass("Setor deletado com sucesso", 204, true, false, undefined)
+      Analista.delete(analista)
+      retorno = new returnClass("Analista deletado com sucesso", 204, true, false, undefined)
       return res.status(204).json(retorno)
     } catch (error) {
       console.log(error)

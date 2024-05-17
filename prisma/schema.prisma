@@ -16,4 +16,53 @@ datasource db {
 model Setores {
   id_setor Int @id @default(autoincrement())
   nome_setor String @unique
+  funcionarios Funcionarios[]
+  analistas Analistas[]
+}
+
+model Funcionarios {
+  id_funcionario Int @id @default(autoincrement())
+  nome_funcionario String @unique
+  id_setor Int
+  setor Setores @relation(fields: [id_setor], references: [id_setor])
+  usuario Usuarios[]
+  analistas Analistas[]
+}
+
+model Usuarios {
+  id_usuario Int @id @default(autoincrement())
+  nome_usuario String @unique
+  senha_usuario String
+  id_funcionario Int?
+  funcionario Funcionarios? @relation(fields: [id_funcionario], references: [id_funcionario])
+  cartoes Cartoes[]
+}
+
+model Cartoes {
+  id_cartao Int @id @default(autoincrement())
+  id_usuario Int
+  desc_problema String 
+  desc_ideia String
+  data_cartao DateTime @default(now())
+  usuario Usuarios @relation(fields: [id_usuario], references: [id_usuario])
+  analises Analises[]
+}
+
+model Analistas {
+  id_analista Int @unique
+  id_setor_analise Int?
+  funcionario Funcionarios @relation(fields: [id_analista], references: [id_funcionario])
+  setor_analise Setores? @relation(fields: [id_setor_analise], references: [id_setor])
+  analises Analises[]
+}
+
+model Analises {
+  id_analise Int @id @default(autoincrement())
+  valor_nota Float
+  id_cartao Int
+  id_analista Int
+  status_analise Int @default(0)
+  data_analise DateTime @default(now())
+  analista Analistas @relation(fields: [id_analista], references: [id_analista])
+  cartao Cartoes @relation(fields: [id_cartao], references: [id_cartao])
 }
