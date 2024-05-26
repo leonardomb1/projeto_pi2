@@ -6,16 +6,16 @@ import FuncionarioController from '../controller/funcionarios.controller.js'
 import CartoesController from '../controller/cartoes.controller.js'
 import UsuarioController from '../controller/usuarios.controller.js'
 import ErrorController from '../controller/error.controller.js'
-
+import {getOneSetorValidation, createSetorValidation, updateSetorValidation} from '../validations/setor.validation.js'
 const router = Router()
 // router.get('*', ErrorController.index)
 
 // Rotas de Setor
-router.get('/setor', SetorController.index)
-router.get('/setor/:idSetor', SetorController.getOneById)
-router.post('/setor', SetorController.create)
-router.put('/setor/:idSetor', SetorController.update)
-router.delete('/setor/:idSetor', SetorController.delete)
+router.get('/setor', SetorController.index) //OK
+router.get('/setor/:idSetor', getOneSetorValidation, SetorController.getOneById) //OK
+router.post('/setor', createSetorValidation, SetorController.create) //Ok
+router.put('/setor/:idSetor', updateSetorValidation, SetorController.update) 
+router.delete('/setor/:idSetor', getOneSetorValidation, SetorController.delete)
 
 // Rotas de Analises
 router.get('/analises', AnaliseController.index)
