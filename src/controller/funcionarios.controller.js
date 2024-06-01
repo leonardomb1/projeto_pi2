@@ -16,11 +16,9 @@ export default class FuncionarioController {
       retorno = new returnClass("Erro Interno Servidor", 500, false, true, funcionarios)
       res.status(500).json(retorno)
     }
-
   }
 
  //MOSTRA FUNCIONARIO
- 
  static async getOneById(req, res) {
   const erros = validationResult(req)
   if(!erros.isEmpty()){
@@ -52,9 +50,7 @@ export default class FuncionarioController {
     if(!erros.isEmpty()){
       return res.status(400).json({erros: erros.array()})
     }
-
     const { nome_funcionario, id_setor } = req.body;
-  
 
     try {
       const createdFuncionarios = await Funcionario.create({
@@ -63,7 +59,6 @@ export default class FuncionarioController {
             id_setor
         }
       });
-
       retorno = new returnClass("Sucesso!", 201, true, false, createdFuncionarios);
       return res.status(201).json(retorno);
     } catch (error) {
@@ -81,11 +76,9 @@ export default class FuncionarioController {
     }
 
     const { idFuncionario } = req.params
-    const { nome_funcionario, id_setor } = req.body
     let retorno = {}
-    
-    try {
-      const funcionarios = await Funcionario.findUnique({
+
+    const funcionarios = await Funcionario.findUnique({
         where: {
           id_funcionario: Number(idFuncionario)
         }
@@ -93,17 +86,17 @@ export default class FuncionarioController {
 
       if (!funcionarios) {
         retorno = new returnClass("Funcionario inexistente!", 404, false, true, undefined)
-        return res.status(404).json(retorno)
+        return res.status(404).json(retorno)      
       }
 
-      const updatedFuncionarios = {
-        ...funcionarios,
-        nome_funcionario,
-        id_setor
-      }
-
-      retorno = new returnClass("Funcionario alterado com sucesso!", 200, true, false, updatedFuncionarios)
-      return res.status(200).json(retorno)
+      try {
+        const updateFuncionario = await Funcionario.update({
+          where: {
+            id_funcionario: Number(idFuncionario)
+          },
+          data: req.body
+        })
+      return res.status(200).json({message:"Funcionário atualizado com sucesso!", updateFuncionario})
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
@@ -138,7 +131,7 @@ export default class FuncionarioController {
         }
       })
       res.json({message: "Funcionario deletado com sucesso!"})
-      
+
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro interno do Servidor", 500, false, true, undefined)

@@ -12,14 +12,16 @@ import ErrorController from '../controller/error.controller.js'
 //VALIDATIONS
 import {getOneSetorValidation, createSetorValidation, updateSetorValidation} from '../validations/setor.validation.js'
 import {getOneFuncValidation, createFuncValidation, updateFuncValidation} from '../validations/funcionarios.validation.js'
+import {getOneUserValidation, createUserValidation, updateUserValidation} from '../validations/usuarios.validation.js'
+import {getOneCartaoValidation, createCartaoValidation, updateCartaoValidation} from "../validations/cartoes.validation.js"
 
 const router = Router()
 // router.get('*', ErrorController.index)
 
 // Rotas de Setor
-router.get('/setor', SetorController.index) //OK
-router.get('/setor/:idSetor', getOneSetorValidation, SetorController.getOneById) //OK
-router.post('/setor', createSetorValidation, SetorController.create) //Ok
+router.get('/setor', SetorController.index)
+router.get('/setor/:idSetor', getOneSetorValidation, SetorController.getOneById)
+router.post('/setor', createSetorValidation, SetorController.create)
 router.put('/setor/:idSetor', updateSetorValidation, SetorController.update) 
 router.delete('/setor/:idSetor', getOneSetorValidation, SetorController.delete)
 
@@ -46,16 +48,16 @@ router.delete('/funcionarios/:idFuncionario', getOneFuncValidation, FuncionarioC
 
 // Rotas de Cartoes
 router.get('/cartoes', CartoesController.index)
-router.get('/cartoes/:idCartoes', CartoesController.getOneById)
-router.post('/cartoes', CartoesController.create)
-router.put('/cartoes/:idCartoes', CartoesController.update)
-router.delete('/cartoes/:idCartoes', CartoesController.delete)
+router.get('/cartoes/:idCartao', getOneCartaoValidation, CartoesController.getOneById)
+router.post('/cartoes', createCartaoValidation, CartoesController.create)
+router.put('/cartoes/:idCartao', updateCartaoValidation, CartoesController.update)
+router.delete('/cartoes/:idCartao', getOneCartaoValidation, CartoesController.delete)
 
 // Rotas de Usuarios
 router.get('/usuarios', UsuarioController.index)
-router.get('/usuarios/:idUsuario', UsuarioController.getOneById)
-router.post('/usuarios', UsuarioController.create)
-router.put('/usuarios/:idUsuario', UsuarioController.update)
-router.delete('/usuarios/:idUsuario', UsuarioController.delete)
+router.get('/usuarios/:idUsuario', getOneUserValidation, UsuarioController.getOneById)
+router.post('/usuarios', createUserValidation, UsuarioController.create)
+router.put('/usuarios/:idUsuario', updateUserValidation, UsuarioController.update)
+router.delete('/usuarios/:idUsuario', getOneUserValidation, UsuarioController.delete)
 
 export default router
