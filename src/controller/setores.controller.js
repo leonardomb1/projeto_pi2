@@ -3,11 +3,12 @@ import returnClass from "../types/returnClass.js";
 import {validationResult} from "express-validator"
 
 
-//MOSTRA SETORES
 export default class SetorController {
+//MOSTRA SETORES
   static async index(req, res) {
     const setores = await Setor.findMany()
     let retorno = {}
+
     if (setores) {
       retorno = new returnClass("OK", 200, true, false, setores)
       res.status(200).json(retorno)
@@ -24,6 +25,7 @@ export default class SetorController {
     if(!erros.isEmpty()){
       return res.status(400).json({erros: erros.array()})
     }
+
     const { idSetor } = req.params
     let retorno = {}
     const setor = await Setor.findUnique({
@@ -42,7 +44,7 @@ export default class SetorController {
     }
   }
 
-  //CRIA SETORES
+  //CRIA SETOR
   static async create(req, res) {
     const erros = validationResult(req)
     let retorno = {}
@@ -98,6 +100,11 @@ export default class SetorController {
 
 
   static async delete(req, res) {
+    const erros = validationResult(req)
+    if(!erros.isEmpty()){
+      return res.status(400).json({erros: erros.array()})
+    }
+
     const { idSetor } = req.params
     let retorno = {}
 
@@ -108,6 +115,15 @@ export default class SetorController {
         }
       })
 
+      /*    const { idSetor } = req.params
+    let retorno = {}
+    const setor = await Setor.findUnique({
+      where: {
+        id_setor: Number(idSetor)
+      }     
+    })*/
+      console.log(setor)
+      
       if (!setor) {
         retorno = new returnClass("Setor inexistente!", 404, false, true, undefined)
         return res.status(404).json(retorno)
