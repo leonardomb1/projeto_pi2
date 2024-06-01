@@ -1,28 +1,60 @@
 import Funcionario from "../models/funcionarios.model.js";
 import returnClass from "../types/returnClass.js";
+import { validationResult } from "express-validator";
 
 export default class FuncionarioController {
+//MOSTRA FUNCIONARIOS
   static async index(req, res) {
     const funcionarios = await Funcionario.findMany()
     let retorno = {}
-    if (analises) {
+
+    if (funcionarios) {
       retorno = new returnClass("OK", 200, true, false, funcionarios)
       res.status(200).json(retorno)
     }
     else {
-      retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
+      retorno = new returnClass("Erro Interno Servidor", 500, false, true, funcionarios)
       res.status(500).json(retorno)
     }
+
   }
 
-  static async create(req, res) {
-    const { nome_funcionario, id_setor } = req.body;
-    let retorno = {};
+ //MOSTRA FUNCIONARIO
+ 
+ static async getOneById(req, res) {
+  const erros = validationResult(req)
+  if(!erros.isEmpty()){
+    return res.status(400).json({erros: erros.array()})
+  }
 
-    if (!req.body || !req.body.valor_nota) {
-      const retorno = new returnClass("Necessário informar campo obrigatório!", 400, false, true, undefined);
-      return res.status(400).json(retorno);
+  const { idFuncionario } = req.params
+  let retorno = {}
+  const funcionarios = await Funcionario.findUnique({
+    where: {
+      id_funcionario: Number(idFuncionario)
     }
+  })
+
+  if (funcionarios) {
+    retorno = new returnClass("OK", 200, true, false, funcionarios)
+    res.status(200).json(retorno)
+  }
+  else {
+    retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
+    res.status(500).json(retorno)
+  }
+} 
+
+//CRIA FUNCIONARIO
+  static async create(req, res) {
+    const erros = validationResult(req)
+    let retorno = {};
+    if(!erros.isEmpty()){
+      return res.status(400).json({erros: erros.array()})
+    }
+
+    const { nome_funcionario, id_setor } = req.body;
+  
 
     try {
       const createdFuncionarios = await Funcionario.create({
@@ -41,30 +73,17 @@ export default class FuncionarioController {
     }
   }
 
-
-  static async getOneById(req, res) {
-    const { idFuncionario } = req.params
-    let retorno = {}
-    const funcionarios = await Funcionario.findUnique({
-      where: {
-        id_funcionario: Number(idFuncionario)
-      }
-    })
-
-    if (funcionarios) {
-      retorno = new returnClass("OK", 200, true, false, funcionarios)
-      res.status(200).json(retorno)
-    }
-    else {
-      retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
-      res.status(500).json(retorno)
-    }
-  }
-
+//EDITA FUNCIONARIO
   static async update(req, res) {
+    const erros = validationResult(req)
+    if(!erros.isEmpty()){
+      return res.status(400).json({erros: erros.array()})
+    }
+
     const { idFuncionario } = req.params
     const { nome_funcionario, id_setor } = req.body
     let retorno = {}
+    
     try {
       const funcionarios = await Funcionario.findUnique({
         where: {
@@ -92,7 +111,13 @@ export default class FuncionarioController {
     }
   }
 
+//DELETA FUNCIONARIO
   static async delete(req, res) {
+    const erros = validationResult(req)
+    if(!erros.isEmpty()){
+      return res.status(400).json({erros: erros.array()})
+    }
+
     const { idFuncionario } = req.params
     let retorno = {}
 
@@ -107,10 +132,13 @@ export default class FuncionarioController {
         retorno = new returnClass("Funcionario inexistente!", 404, false, true, undefined)
         return res.status(404).json(retorno)
       }
-
-      Funcionario.delete(funcionarios)
-      retorno = new returnClass("Funcionario deletado com sucesso", 204, true, false, undefined)
-      return res.status(204).json(retorno)
+      await Funcionario.delete({
+        where: {
+          id_funcionario: Number(req.params.idFuncionario)
+        }
+      })
+      res.json({message: "Funcionario deletado com sucesso!"})
+      
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro interno do Servidor", 500, false, true, undefined)
