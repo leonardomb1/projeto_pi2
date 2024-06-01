@@ -91,14 +91,13 @@ export default class SetorController {
         data: req.body
       })
       return res.status(200).json({message:"Setor atualizado com sucesso!", updateSetor})
-    
     } catch {
       let retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
       return res.status(500).json(retorno)
     }
   }
 
-
+//DELETA SETOR
   static async delete(req, res) {
     const erros = validationResult(req)
     if(!erros.isEmpty()){
@@ -115,15 +114,6 @@ export default class SetorController {
         }
       })
 
-      /*    const { idSetor } = req.params
-    let retorno = {}
-    const setor = await Setor.findUnique({
-      where: {
-        id_setor: Number(idSetor)
-      }     
-    })*/
-      console.log(setor)
-      
       if (!setor) {
         retorno = new returnClass("Setor inexistente!", 404, false, true, undefined)
         return res.status(404).json(retorno)
@@ -134,7 +124,6 @@ export default class SetorController {
         }
       })
       res.json({message: "Setor deletado com sucesso!"})
-    
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro interno do Servidor", 500, false, true, undefined)

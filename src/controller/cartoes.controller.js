@@ -1,7 +1,9 @@
 import Cartoes from "../models/cartoes.model.js";
 import returnClass from "../types/returnClass.js";
+import {validationResult} from "express-validator";
 
 export default class CartoesController {
+//MOSTRA CARTÕES
   static async index(req, res) {
     const cartoes = await Cartoes.findMany()
     let retorno = {}
@@ -15,14 +17,15 @@ export default class CartoesController {
     }
   }
 
+//CRIA CARTÃO
   static async create(req, res) {
+    const erros = validationResult(req)
+    if(!erros.isEmpty()){
+      return res.status(400).json({erros: erros.array()})
+    }
+
     const { id_usuario, desc_problema, desc_ideia } = req.body;
     let retorno = {};
-
-    if (!req.body || !req.body.id_usuario) {
-      const retorno = new returnClass("Necessário informar campo obrigatório!", 400, false, true, undefined);
-      return res.status(400).json(retorno);
-    }
 
     try {
       const createdCartoes = await Cartoes.create({
@@ -42,13 +45,18 @@ export default class CartoesController {
     }
   }
 
-
+//MOSTRA CARTÃO
   static async getOneById(req, res) {
-    const { idCartoes } = req.params
+    const erros = validationResult(req)
+    if(!erros.isEmpty()){
+      return res.status(400).json({erros: erros.array()})
+    }
+
+    const { idCartao } = req.params
     let retorno = {}
     const cartoes = await Cartoes.findUnique({
       where: {
-        id_cartoes: Number(idCartoes)
+        id_cartao: Number(idCartao)
       }
     })
 
@@ -62,14 +70,20 @@ export default class CartoesController {
     }
   }
 
+//EDITA CARTÃO
   static async update(req, res) {
-    const { idCartoes } = req.params
+    const erros = validationResult(req)
+    if(!erros.isEmpty()){
+      return res.status(400).json({erros: erros.array()})
+    }
+
+    const { idCartao } = req.params
     const { id_usuario, desc_problema, desc_ideia  } = req.body
     let retorno = {}
-    try {
+
       const cartoes = await Cartoes.findUnique({
         where: {
-          id_cartao: Number(idCartoes)
+          id_cartao: Number(idCartao)
         }
       })
 
@@ -78,15 +92,14 @@ export default class CartoesController {
         return res.status(404).json(retorno)
       }
 
-      const updatedCartoes = {
-        ...cartoes,
-        id_usuario,
-        desc_problema,
-        desc_ideia
-      }
-
-      retorno = new returnClass("Cartão alterado com sucesso!", 200, true, false, updatedCartoes)
-      return res.status(200).json(retorno)
+      try{
+        const updatedCartoes = await Cartoes.update({
+          where: {
+            id_cartao: Number(idCartao)
+          },
+          data: req.body
+        })
+      return res.status(200).json({message:"Funcionário atualizado com sucesso!", updateFuncionario})
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
@@ -94,12 +107,17 @@ export default class CartoesController {
     }
   }
 
+  //DELETA CARTÃO
   static async delete(req, res) {
+    const erros = validationResult(req)
+    if(!erros.isEmpty()){
+      return res.status(400).json({erros: erros.array()})
+    }
+
     const { idCartao } = req.params
     let retorno = {}
 
-    try {
-      const cartoes = await Cartoes.findUnique({
+    const cartoes = await Cartoes.findUnique({
         where: {
             id_cartao: Number(idCartao)
         }
@@ -110,9 +128,13 @@ export default class CartoesController {
         return res.status(404).json(retorno)
       }
 
-      Cartoes.delete(cartoes)
-      retorno = new returnClass("Cartão deletado com sucesso", 204, true, false, undefined)
-      return res.status(204).json(retorno)
+      try{ 
+        await Cartoes.delete({
+        where:{
+          id_cartao: Number(req.params.idCartao)
+        }
+      })
+        return res.status(200).json({message:"Cartão deletado com sucesso!"})
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro interno do Servidor", 500, false, true, undefined)
