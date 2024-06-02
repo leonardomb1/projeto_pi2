@@ -46,6 +46,7 @@ model Cartoes {
   data_cartao DateTime @default(now())
   usuario Usuarios @relation(fields: [id_usuario], references: [id_usuario])
   analises Analises[]
+  cartoes_pilares Cartoes_Pilares []
 }
 
 model Analistas {
@@ -62,7 +63,22 @@ model Analises {
   id_cartao Int
   id_analista Int
   status_analise Int @default(0)
+  observacao String 
   data_analise DateTime @default(now())
   analista Analistas @relation(fields: [id_analista], references: [id_analista])
   cartao Cartoes @relation(fields: [id_cartao], references: [id_cartao])
+}
+
+model Cartoes_Pilares{
+  id Int @id @default(autoincrement())
+  id_pilar Int
+  id_cartao Int
+  pilar Pilares @relation(fields: [id_pilar], references: [id_pilar])
+  cartao Cartoes @relation(fields: [id_cartao], references: [id_cartao])
+}
+
+model Pilares {
+  id_pilar Int @id @default(autoincrement())
+  nome_pilar String
+  cartoes_pilares Cartoes_Pilares[]
 }
