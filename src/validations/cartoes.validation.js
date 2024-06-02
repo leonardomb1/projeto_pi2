@@ -4,6 +4,10 @@ export const getOneCartaoValidation = [
     param('idCartao').isNumeric().withMessage("ID do cartão é obrigatório!")
 ]
 
+export const getCartaoByUserValidation = [
+    param('idUsuario').isNumeric().withMessage("ID do usuario é obrigatório!")
+]
+
 export const createCartaoValidation = [
     body('id_usuario').isNumeric().withMessage('ID do usuário é obrigatório!'),
     body('desc_problema').isString().withMessage('Descreva o problema a ser resolvido!'),

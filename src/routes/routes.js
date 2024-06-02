@@ -13,7 +13,7 @@ import ErrorController from '../controller/error.controller.js'
 import {getOneSetorValidation, createSetorValidation, updateSetorValidation} from '../validations/setor.validation.js'
 import {getOneFuncValidation, createFuncValidation, updateFuncValidation} from '../validations/funcionarios.validation.js'
 import {getOneUserValidation, createUserValidation, updateUserValidation, loginUserValidation} from '../validations/usuarios.validation.js'
-import {getOneCartaoValidation, createCartaoValidation, updateCartaoValidation} from "../validations/cartoes.validation.js"
+import {getOneCartaoValidation, createCartaoValidation, updateCartaoValidation, getCartaoByUserValidation} from "../validations/cartoes.validation.js"
 
 const router = Router()
 // router.get('*', ErrorController.index)
@@ -51,7 +51,7 @@ router.get('/cartoes', CartoesController.index)
 router.get('/cartoes/:idCartao', getOneCartaoValidation, CartoesController.getOneById)
 router.post('/cartoes', createCartaoValidation, CartoesController.create)
 router.put('/cartoes/:idCartao', updateCartaoValidation, CartoesController.update)
-router.get('/cartoes/user/:idUsuario', getOneCartaoValidation, CartoesController.getManyByUserId)
+router.get('/cartoes/user/:idUsuario', getCartaoByUserValidation, CartoesController.getManyByUserId)
 router.delete('/cartoes/:idCartao', getOneCartaoValidation, CartoesController.delete)
 
 // Rotas de Usuarios
