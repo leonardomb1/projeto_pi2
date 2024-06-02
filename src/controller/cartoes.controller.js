@@ -71,30 +71,30 @@ export default class CartoesController {
   }
 
   
-//MOSTRA CARTÃO
-static async getManyByUserId(req, res) {
-  const erros = validationResult(req)
-  if(!erros.isEmpty()){
-    return res.status(400).json({erros: erros.array()})
-  }
-
-  const { idUsuario } = req.params
-  let retorno = {}
-  const cartoes = await Cartoes.findMany({
-    where: {
-      id_usuario: Number(idUsuario)
+  //MOSTRA CARTÃO
+  static async getManyByUserId(req, res) {
+    const erros = validationResult(req)
+    if(!erros.isEmpty()){
+      return res.status(400).json({erros: erros.array()})
     }
-  })
 
-  if (cartoes) {
-    retorno = new returnClass("OK", 200, true, false, cartoes)
-    return res.status(200).json(retorno)
+    const { idUsuario } = req.params
+    let retorno = {}
+    const cartoes = await Cartoes.findMany({
+      where: {
+        id_usuario: Number(idUsuario)
+      }
+    })
+
+    if (cartoes) {
+      retorno = new returnClass("OK", 200, true, false, cartoes)
+      return res.status(200).json(retorno)
+    }
+    else {
+      retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
+      return res.status(500).json(retorno)
+    }
   }
-  else {
-    retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
-    return res.status(500).json(retorno)
-  }
-}
 
 //EDITA CARTÃO
   static async update(req, res) {
