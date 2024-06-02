@@ -51,6 +51,7 @@ router.get('/cartoes', CartoesController.index)
 router.get('/cartoes/:idCartao', getOneCartaoValidation, CartoesController.getOneById)
 router.post('/cartoes', createCartaoValidation, CartoesController.create)
 router.put('/cartoes/:idCartao', updateCartaoValidation, CartoesController.update)
+router.put('/cartoes/user/:idUsuario', updateCartaoValidation, CartoesController.getManyByUserId)
 router.delete('/cartoes/:idCartao', getOneCartaoValidation, CartoesController.delete)
 
 // Rotas de Usuarios
