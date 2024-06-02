@@ -12,7 +12,7 @@ import ErrorController from '../controller/error.controller.js'
 //VALIDATIONS
 import {getOneSetorValidation, createSetorValidation, updateSetorValidation} from '../validations/setor.validation.js'
 import {getOneFuncValidation, createFuncValidation, updateFuncValidation} from '../validations/funcionarios.validation.js'
-import {getOneUserValidation, createUserValidation, updateUserValidation} from '../validations/usuarios.validation.js'
+import {getOneUserValidation, createUserValidation, updateUserValidation, loginUserValidation} from '../validations/usuarios.validation.js'
 import {getOneCartaoValidation, createCartaoValidation, updateCartaoValidation} from "../validations/cartoes.validation.js"
 
 const router = Router()
@@ -57,6 +57,7 @@ router.delete('/cartoes/:idCartao', getOneCartaoValidation, CartoesController.de
 router.get('/usuarios', UsuarioController.index)
 router.get('/usuarios/:idUsuario', getOneUserValidation, UsuarioController.getOneById)
 router.post('/usuarios', createUserValidation, UsuarioController.create)
+router.post('/usuarios/login', loginUserValidation, UsuarioController.loginUser )
 router.put('/usuarios/:idUsuario', updateUserValidation, UsuarioController.update)
 router.delete('/usuarios/:idUsuario', getOneUserValidation, UsuarioController.delete)
 
