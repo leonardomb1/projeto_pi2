@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -18,6 +18,17 @@ model Setores {
   nome_setor String @unique
   funcionarios Funcionarios[]
   analistas Analistas[]
+  idealiza Idealiza[]
+}
+
+model Idealiza{
+  id_idealiza Int @id @default(autoincrement())
+  id_setor Int
+  id_funcionario Int
+  id_cartao Int
+  setor Setores @relation(fields: [id_setor], references: [id_setor])
+  funcionario Funcionarios @relation(fields: [id_funcionario], references: [id_funcionario])
+  cartao Cartoes @relation(fields:[id_cartao], references: [id_cartao])
 }
 
 model Funcionarios {
@@ -27,6 +38,7 @@ model Funcionarios {
   setor Setores @relation(fields: [id_setor], references: [id_setor])
   usuario Usuarios[]
   analistas Analistas[]
+  idealiza Idealiza[]
 }
 
 model Usuarios {
@@ -43,10 +55,12 @@ model Cartoes {
   id_usuario Int
   desc_problema String 
   desc_ideia String
+  status String
   data_cartao DateTime @default(now())
   usuario Usuarios @relation(fields: [id_usuario], references: [id_usuario])
-  analises Analises[]
+  analise Analises[]
   cartoes_pilares Cartoes_Pilares []
+  idealiza Idealiza[]
 }
 
 model Analistas {
