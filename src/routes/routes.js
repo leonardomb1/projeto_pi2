@@ -14,6 +14,7 @@ import {getOneSetorValidation, createSetorValidation, updateSetorValidation} fro
 import {getOneFuncValidation, createFuncValidation, updateFuncValidation} from '../validations/funcionarios.validation.js'
 import {getOneUserValidation, createUserValidation, updateUserValidation, loginUserValidation} from '../validations/usuarios.validation.js'
 import {getOneCartaoValidation, createCartaoValidation, updateCartaoValidation, getCartaoByUserValidation} from "../validations/cartoes.validation.js"
+import {getOneAnaliseValidation, createAnaliseValidation, updateAnaliseValidation, getAnaliseByCartaoValidation} from "../validations/analises.validation.js"
 
 const router = Router()
 // router.get('*', ErrorController.index)
@@ -27,10 +28,10 @@ router.delete('/setor/:idSetor', getOneSetorValidation, SetorController.delete)
 
 // Rotas de Analises
 router.get('/analises', AnaliseController.index)
-router.get('/analises/:idAnalise', AnaliseController.getOneById)
-router.post('/analises', AnaliseController.create)
-router.put('/analises/:idAnalise', AnaliseController.update)
-router.delete('/analises/:idAnalise', AnaliseController.delete)
+router.get('/analises/:idAnalise', getOneAnaliseValidation, AnaliseController.getOneById)
+router.post('/analises',createAnaliseValidation, AnaliseController.create)
+router.put('/analises/:idAnalise', updateAnaliseValidation, AnaliseController.update)
+router.delete('/analises/:idAnalise', getOneAnaliseValidation, AnaliseController.delete)
 
 // Rotas de Analistas
 router.get('/analistas', AnalistaController.index)
@@ -61,5 +62,6 @@ router.post('/usuarios', createUserValidation, UsuarioController.create)
 router.post('/usuarios/login', loginUserValidation, UsuarioController.loginUser )
 router.put('/usuarios/:idUsuario', updateUserValidation, UsuarioController.update)
 router.delete('/usuarios/:idUsuario', getOneUserValidation, UsuarioController.delete)
+
 
 export default router
