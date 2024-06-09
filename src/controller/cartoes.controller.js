@@ -5,7 +5,11 @@ import {validationResult} from "express-validator";
 export default class CartoesController {
 //MOSTRA CARTÕES
   static async index(req, res) {
-    const cartoes = await Cartoes.findMany()
+    const cartoes = await prisma.cartoes.findMany({
+      include: {
+        analise: true,
+      },
+    });
     let retorno = {}
     if (cartoes) {
       retorno = new returnClass("OK", 200, true, false, cartoes)
@@ -24,7 +28,7 @@ export default class CartoesController {
       return res.status(400).json({erros: erros.array()})
     }
 
-    const { id_usuario, desc_problema, desc_ideia } = req.body;
+    const { id_usuario, desc_problema, desc_ideia, nome_projeto } = req.body;
     let retorno = {};
 
     try {
@@ -32,7 +36,8 @@ export default class CartoesController {
         data: {
             id_usuario,
             desc_problema,
-            desc_ideia
+            desc_ideia,
+            nome_projeto
         }
       });
 
@@ -104,7 +109,7 @@ export default class CartoesController {
     }
 
     const { idCartao } = req.params
-    const { id_usuario, desc_problema, desc_ideia  } = req.body
+    const { desc_problema, desc_ideia, nome_projeto  } = req.body
     let retorno = {}
 
       const cartoes = await Cartoes.findUnique({
@@ -123,7 +128,11 @@ export default class CartoesController {
           where: {
             id_cartao: Number(idCartao)
           },
-          data: req.body
+          data: {
+            nome_projeto,
+            desc_ideia,
+            desc_problema
+          }
         })
       return res.status(200).json({message:"Funcionário atualizado com sucesso!", updateFuncionario})
     } catch (error) {
