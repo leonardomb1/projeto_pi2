@@ -1,10 +1,9 @@
 import Pilar from '../models/pilares.model.js'
 import returnClass from '../types/returnClass.js'
-import { validationResult } from 'express-validator'
 
 export default class PilarController {
     static async index(req, res) {
-        const pilares = await Cartoes.findMany()
+        const pilares = await Pilar.findMany()
         let retorno = {}
         if (pilares) {
           retorno = new returnClass("OK", 200, true, false, pilares)
