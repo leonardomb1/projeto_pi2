@@ -53,9 +53,9 @@ model Usuarios {
 model Cartoes {
   id_cartao Int @id @default(autoincrement())
   id_usuario Int
+  nome_projeto String?
   desc_problema String 
   desc_ideia String
-  status String
   data_cartao DateTime @default(now())
   usuario Usuarios @relation(fields: [id_usuario], references: [id_usuario])
   analise Analises[]

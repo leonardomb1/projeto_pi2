@@ -16,7 +16,7 @@ export default class AnaliseController {
   }
 
   static async create(req, res) {
-    const { valor_nota, id_cartao, id_analista } = req.body;
+    const { valor_nota, id_cartao, id_analista, status_analise, observacao } = req.body;
     let retorno = {};
 
     if (!req.body || !req.body.valor_nota) {
@@ -29,7 +29,9 @@ export default class AnaliseController {
         data: {
             valor_nota,
             id_cartao,
-            id_analista
+            id_analista,
+            status_analise,
+            observacao
         }
       });
 
@@ -64,7 +66,7 @@ export default class AnaliseController {
 
   static async update(req, res) {
     const { idAnalise } = req.params
-    const { valor_nota, id_cartao, id_analista  } = req.body
+    const { valor_nota, id_cartao, id_analista, status, obs  } = req.body
     let retorno = {}
     try {
       const analises = await Analise.findUnique({
@@ -82,7 +84,9 @@ export default class AnaliseController {
         ...analises,
         valor_nota,
         id_cartao,
-        id_analista
+        id_analista,
+        status,
+        obs
       }
 
       retorno = new returnClass("Analise alterada com sucesso!", 200, true, false, updatedAnalises)
