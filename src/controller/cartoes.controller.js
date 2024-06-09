@@ -41,7 +41,7 @@ export default class CartoesController {
         }
       });
 
-      retorno = new returnClass("Sucesso!", 201, true, false, createdCartoes);
+      retorno = new returnClass("Sucesso!", 201, true, false, createdCartoes.id_cartao);
       return res.status(201).json(retorno);
     } catch (error) {
       console.log(error);
