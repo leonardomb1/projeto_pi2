@@ -61,7 +61,7 @@ export default class UsuarioController {
     })
 
     if (login !== null) {
-      retorno = new returnClass("OK", 200, true, false, "Aprovado")
+      retorno = new returnClass("OK", 200, true, false, login.id_usuario)
       return res.status(200).json(retorno)
     } else {
       retorno = new returnClass("Não Autorizado", 401, false, true, null)
