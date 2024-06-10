@@ -5,7 +5,7 @@ import {validationResult} from "express-validator";
 export default class CartoesController {
 //MOSTRA CARTÕES
   static async index(req, res) {
-    const cartoes = await prisma.cartoes.findMany({
+    const cartoes = await Cartoes.findMany({
       include: {
         analise: true,
       },
