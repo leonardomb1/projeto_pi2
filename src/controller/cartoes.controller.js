@@ -91,6 +91,9 @@ export default class CartoesController {
     const cartoes = await Cartoes.findMany({
       where: {
         id_usuario: Number(idUsuario)
+      },
+      include: {
+        analise: true,
       }
     })
 
