@@ -8,6 +8,7 @@ export default class CartoesController {
     const cartoes = await Cartoes.findMany({
       include: {
         analise: true,
+        cartoes_pilares: true
       },
     });
     let retorno = {}
@@ -65,6 +66,7 @@ export default class CartoesController {
       },
       include: {
         analise: true,
+        cartoes_pilares: true
       }
     })
 
@@ -94,6 +96,7 @@ export default class CartoesController {
       },
       include: {
         analise: true,
+        cartoes_pilares: true
       }
     })
 
