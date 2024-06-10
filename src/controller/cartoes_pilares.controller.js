@@ -12,7 +12,7 @@ export default class CartoesPilaresController {
   
       const { id_cartao, nome_pilar } = req.body;
       let retorno = {};
-  
+
       try {
         const createdCartoesPilares = [];
         for (const pilar of nome_pilar) {
@@ -24,8 +24,8 @@ export default class CartoesPilaresController {
           
           const cartaoPilar = await CartoesPilares.create({
             data: {
-                id_cartao,
-                id_pilar: pilarPeloNome.id
+                id_cartao : id_cartao,
+                id_pilar: pilarPeloNome.id_pilar
             }
           });
           createdCartoesPilares.push(cartaoPilar);
