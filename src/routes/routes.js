@@ -7,6 +7,7 @@ import AnalistaController from '../controller/analistas.controller.js'
 import FuncionarioController from '../controller/funcionarios.controller.js'
 import CartoesController from '../controller/cartoes.controller.js'
 import UsuarioController from '../controller/usuarios.controller.js'
+import CartoesPilaresController from '../controller/cartoes_pilares.controller.js'
 import ErrorController from '../controller/error.controller.js'
 import PilarController from '../controller/pilares.controller.js'
 
@@ -16,8 +17,7 @@ import {getOneFuncValidation, createFuncValidation, updateFuncValidation} from '
 import {getOneUserValidation, createUserValidation, updateUserValidation, loginUserValidation} from '../validations/usuarios.validation.js'
 import {getOneCartaoValidation, createCartaoValidation, updateCartaoValidation, getCartaoByUserValidation} from "../validations/cartoes.validation.js"
 import { createCartaoPilarValidation } from "../validations/cartoes_pilares.validation.js"
-import CartoesPilaresController from '../controller/cartoes_pilares.controller.js'
-
+import { getOnePilarValidation} from "../validations/pilares.validation.js"
 
 const router = Router()
 // router.get('*', ErrorController.index)
@@ -68,6 +68,7 @@ router.delete('/usuarios/:idUsuario', getOneUserValidation, UsuarioController.de
 
 // Rotas dos Pilares
 router.get('/pilares', PilarController.index)
+router.get('/pilares/:idPilar', getOnePilarValidation, PilarController.getOneById)
 
 // Rota do Cartão-Pilar
 router.post('/cartaoPilar', createCartaoPilarValidation, CartoesPilaresController.create )
