@@ -62,6 +62,9 @@ export default class CartoesController {
     const cartoes = await Cartoes.findUnique({
       where: {
         id_cartao: Number(idCartao)
+      },
+      include: {
+        analise: true,
       }
     })
 
