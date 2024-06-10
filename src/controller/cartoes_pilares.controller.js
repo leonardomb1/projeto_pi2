@@ -1,5 +1,6 @@
 import CartoesPilares from '../models/cartoes_pilares.model.js'
 import returnClass from '../types/returnClass.js'
+import {validationResult} from "express-validator";
 
 export default class CartoesPilaresController {
   static async create(req, res) {
