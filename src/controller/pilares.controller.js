@@ -25,7 +25,7 @@ export default class PilarController {
       const { idPilar } = req.params
       let retorno = {}
       const pilar = await Pilar.findUnique({
-        where: {
+        where:   {
           id_pilar: Number(idPilar)
         }
       })
@@ -37,6 +37,36 @@ export default class PilarController {
       else {
         retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
         res.status(500).json(retorno)
+      }
+    }
+
+    static async getByList(req,res) {
+      const erros = validationResult(req, res) 
+      let retorno = {};
+      if(!erros.isEmpty()) {
+        return res.status(400).json({erros: erros.array()})
+      }
+
+      const { id_pilar:idPilar } = req.body
+
+      if (!Array.isArray(idPilar) || idPilar.some(isNaN)) {
+        retorno = new returnClass("Formato inválido!", 400, false, true, undefined)
+        return res.status(400).json(retorno);
+      }
+
+      try {
+        const pilares = await Pilar.findMany({
+          where: {
+            id_pilar: { in: idPilar.map(Number) }
+          }, select : { nome_pilar: true }
+        })
+
+        retorno = new returnClass("Ok", 200, true, false, pilares)
+        return res.status(200).json(retorno)
+      } catch (error) {
+        console.log(error)
+        retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
+        return res.status(500).json(retorno)
       }
     }
 }

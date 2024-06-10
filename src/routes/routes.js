@@ -69,6 +69,7 @@ router.delete('/usuarios/:idUsuario', getOneUserValidation, UsuarioController.de
 // Rotas dos Pilares
 router.get('/pilares', PilarController.index)
 router.get('/pilares/:idPilar', getOnePilarValidation, PilarController.getOneById)
+router.post('/pilares/buscar', PilarController.getByList)
 
 // Rota do Cartão-Pilar
 router.post('/cartaoPilar', createCartaoPilarValidation, CartoesPilaresController.create )
