@@ -1,4 +1,5 @@
 import CartoesPilares from '../models/cartoes_pilares.model.js'
+import Pilar from '../models/pilares.model.js'
 import returnClass from '../types/returnClass.js'
 import {validationResult} from "express-validator";
 
