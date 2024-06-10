@@ -15,6 +15,7 @@ import {getOneFuncValidation, createFuncValidation, updateFuncValidation} from '
 import {getOneUserValidation, createUserValidation, updateUserValidation, loginUserValidation} from '../validations/usuarios.validation.js'
 import {getOneCartaoValidation, createCartaoValidation, updateCartaoValidation, getCartaoByUserValidation} from "../validations/cartoes.validation.js"
 import {getOneAnaliseValidation, createAnaliseValidation, updateAnaliseValidation, getAnaliseByCartaoValidation} from "../validations/analises.validation.js"
+import { createAnalistaValidation, deleteAnalistaValidation, getOneAnalistaValidation, updateAnalistaValidation } from '../validations/analistas.validation.js'
 
 const router = Router()
 // router.get('*', ErrorController.index)
@@ -35,10 +36,10 @@ router.delete('/analises/:idAnalise', getOneAnaliseValidation, AnaliseController
 
 // Rotas de Analistas
 router.get('/analistas', AnalistaController.index)
-router.get('/analistas/:idAnalista', AnalistaController.getOneById)
-router.post('/analistas', AnalistaController.create)
-router.put('/analistas/:idAnalista', AnalistaController.update)
-router.delete('/analistas/:idAnalista', AnalistaController.delete)
+router.get('/analistas/:idAnalista', getOneAnalistaValidation, AnalistaController.getOneById)
+router.post('/analistas', createAnalistaValidation, AnalistaController.create)
+router.put('/analistas/:idAnalista', updateAnalistaValidation, AnalistaController.update)
+router.delete('/analistas/:idAnalista', deleteAnalistaValidation, AnalistaController.delete)
 
 // Rotas de Funcionarios
 router.get('/funcionarios', FuncionarioController.index)
