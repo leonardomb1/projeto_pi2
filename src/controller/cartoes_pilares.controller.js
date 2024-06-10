@@ -18,7 +18,7 @@ export default class CartoesPilaresController {
         for (const pilar of nome_pilar) {
           const pilarPeloNome = await Pilar.findUnique({
             where: {
-              nome: pilar
+              nome_pilar: pilar
             }
           });
           
