@@ -30,7 +30,7 @@ export default class CartoesController {
       return res.status(400).json({erros: erros.array()})
     }
 
-    const { id_usuario, desc_problema, desc_ideia, nome_projeto } = req.body;
+    const { id_usuario: id_usuario , desc_problema: desc_problema, desc_ideia: desc_ideia, nome_projeto, urlImagem: url_imagem } = req.body;
     let retorno = {};
 
     try {
