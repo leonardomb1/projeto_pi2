@@ -7,7 +7,9 @@ import AnalistaController from '../controller/analistas.controller.js'
 import FuncionarioController from '../controller/funcionarios.controller.js'
 import CartoesController from '../controller/cartoes.controller.js'
 import UsuarioController from '../controller/usuarios.controller.js'
+import CartoesPilaresController from '../controller/cartoes_pilares.controller.js'
 import ErrorController from '../controller/error.controller.js'
+import PilarController from '../controller/pilares.controller.js'
 
 //VALIDATIONS
 import {getOneSetorValidation, createSetorValidation, updateSetorValidation} from '../validations/setor.validation.js'
@@ -16,6 +18,10 @@ import {getOneUserValidation, createUserValidation, updateUserValidation, loginU
 import {getOneCartaoValidation, createCartaoValidation, updateCartaoValidation, getCartaoByUserValidation} from "../validations/cartoes.validation.js"
 import {getOneAnaliseValidation, createAnaliseValidation, updateAnaliseValidation, getAnaliseByCartaoValidation} from "../validations/analises.validation.js"
 import { createAnalistaValidation, deleteAnalistaValidation, getOneAnalistaValidation, updateAnalistaValidation } from '../validations/analistas.validation.js'
+
+import { createCartaoPilarValidation } from "../validations/cartoes_pilares.validation.js"
+import { getOnePilarValidation} from "../validations/pilares.validation.js"
+
 
 const router = Router()
 // router.get('*', ErrorController.index)
@@ -63,6 +69,14 @@ router.post('/usuarios', createUserValidation, UsuarioController.create)
 router.post('/usuarios/login', loginUserValidation, UsuarioController.loginUser )
 router.put('/usuarios/:idUsuario', updateUserValidation, UsuarioController.update)
 router.delete('/usuarios/:idUsuario', getOneUserValidation, UsuarioController.delete)
+
+// Rotas dos Pilares
+router.get('/pilares', PilarController.index)
+router.get('/pilares/:idPilar', getOnePilarValidation, PilarController.getOneById)
+router.post('/pilares/buscar', PilarController.getByList)
+
+// Rota do Cartão-Pilar
+router.post('/cartaoPilar', createCartaoPilarValidation, CartoesPilaresController.create )
 
 
 export default router
