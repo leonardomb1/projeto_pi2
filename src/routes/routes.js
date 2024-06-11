@@ -16,8 +16,12 @@ import {getOneSetorValidation, createSetorValidation, updateSetorValidation} fro
 import {getOneFuncValidation, createFuncValidation, updateFuncValidation} from '../validations/funcionarios.validation.js'
 import {getOneUserValidation, createUserValidation, updateUserValidation, loginUserValidation} from '../validations/usuarios.validation.js'
 import {getOneCartaoValidation, createCartaoValidation, updateCartaoValidation, getCartaoByUserValidation} from "../validations/cartoes.validation.js"
+import {getOneAnaliseValidation, createAnaliseValidation, updateAnaliseValidation, getAnaliseByCartaoValidation} from "../validations/analises.validation.js"
+import { createAnalistaValidation, deleteAnalistaValidation, getOneAnalistaValidation, updateAnalistaValidation } from '../validations/analistas.validation.js'
+
 import { createCartaoPilarValidation } from "../validations/cartoes_pilares.validation.js"
 import { getOnePilarValidation} from "../validations/pilares.validation.js"
+
 
 const router = Router()
 // router.get('*', ErrorController.index)
@@ -31,17 +35,17 @@ router.delete('/setor/:idSetor', getOneSetorValidation, SetorController.delete)
 
 // Rotas de Analises
 router.get('/analises', AnaliseController.index)
-router.get('/analises/:idAnalise', AnaliseController.getOneById)
-router.post('/analises', AnaliseController.create)
-router.put('/analises/:idAnalise', AnaliseController.update)
-router.delete('/analises/:idAnalise', AnaliseController.delete)
+router.get('/analises/:idAnalise', getOneAnaliseValidation, AnaliseController.getOneById)
+router.post('/analises',createAnaliseValidation, AnaliseController.create)
+router.put('/analises/:idAnalise', updateAnaliseValidation, AnaliseController.update)
+router.delete('/analises/:idAnalise', getOneAnaliseValidation, AnaliseController.delete)
 
 // Rotas de Analistas
 router.get('/analistas', AnalistaController.index)
-router.get('/analistas/:idAnalista', AnalistaController.getOneById)
-router.post('/analistas', AnalistaController.create)
-router.put('/analistas/:idAnalista', AnalistaController.update)
-router.delete('/analistas/:idAnalista', AnalistaController.delete)
+router.get('/analistas/:idAnalista', getOneAnalistaValidation, AnalistaController.getOneById)
+router.post('/analistas', createAnalistaValidation, AnalistaController.create)
+router.put('/analistas/:idAnalista', updateAnalistaValidation, AnalistaController.update)
+router.delete('/analistas/:idAnalista', deleteAnalistaValidation, AnalistaController.delete)
 
 // Rotas de Funcionarios
 router.get('/funcionarios', FuncionarioController.index)
@@ -73,5 +77,6 @@ router.post('/pilares/buscar', PilarController.getByList)
 
 // Rota do Cartão-Pilar
 router.post('/cartaoPilar', createCartaoPilarValidation, CartoesPilaresController.create )
+
 
 export default router
