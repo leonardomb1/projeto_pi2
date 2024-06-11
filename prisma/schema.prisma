@@ -56,6 +56,7 @@ model Cartoes {
   nome_projeto String?
   desc_problema String 
   desc_ideia String
+  url_imagem String?
   data_cartao DateTime @default(now())
   usuario Usuarios @relation(fields: [id_usuario], references: [id_usuario])
   analise Analises[]

@@ -1,4 +1,5 @@
 import Cartoes from "../models/cartoes.model.js";
+import CartoesPilares from "../models/cartoes_pilares.model.js";
 import returnClass from "../types/returnClass.js";
 import {validationResult} from "express-validator";
 
@@ -38,7 +39,8 @@ export default class CartoesController {
             id_usuario,
             desc_problema,
             desc_ideia,
-            nome_projeto
+            nome_projeto,
+            url_imagem
         }
       });
 
@@ -143,7 +145,7 @@ export default class CartoesController {
             desc_problema
           }
         })
-      return res.status(200).json({message:"Funcionário atualizado com sucesso!", updateFuncionario})
+      return res.status(200).json({message:"Funcionário atualizado com sucesso!", updatedCartoes})
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
@@ -178,6 +180,13 @@ export default class CartoesController {
           id_cartao: Number(req.params.idCartao)
         }
       })
+
+        await CartoesPilares.delete({
+          where:{
+            id_cartao: Number(req.params.idCartao)
+          }
+        })
+        
         return res.status(200).json({message:"Cartão deletado com sucesso!"})
     } catch (error) {
       console.log(error)
