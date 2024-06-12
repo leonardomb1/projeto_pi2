@@ -53,7 +53,7 @@ model Usuarios {
 model Cartoes {
   id_cartao Int @id @default(autoincrement())
   id_usuario Int
-  nome_projeto String?
+  nome_projeto String
   desc_problema String 
   desc_ideia String
   url_imagem String?
