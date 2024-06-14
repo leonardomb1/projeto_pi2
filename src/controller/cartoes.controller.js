@@ -1,3 +1,4 @@
+import Generic from "../models/generic.model.js";
 import Cartoes from "../models/cartoes.model.js";
 import CartoesPilares from "../models/cartoes_pilares.model.js";
 import returnClass from "../types/returnClass.js";
@@ -50,6 +51,76 @@ export default class CartoesController {
       console.log(error);
       retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined);
       return res.status(500).json(retorno);
+    }
+  }
+
+  static async mostraStatusCartao(req, res) {
+    const erros = validationResult(req)
+    if(!erros.isEmpty()){
+      return res.status(400).json({erros: erros.array()})
+    }
+
+    const { idCartao } = req.params
+    let retorno = {}
+
+    const statusCartao = await Generic.$queryRaw`
+      SELECT 
+        id_cartao,
+        CASE 
+            WHEN status_analise IS NULL THEN 'Pendente'
+            WHEN status_analise = 1 THEN 'Aprovado'
+            WHEN status_analise = 0 THEN 'Reprovado'
+        END AS status_cartao
+      FROM (
+        SELECT
+            "CA".id_cartao,
+            "AN".status_analise
+        FROM "Cartoes" AS "CA"
+        LEFT OUTER JOIN "Analises" AS "AN"
+            ON  "AN".id_cartao = "CA".id_cartao
+        ) res
+      WHERE id_cartao = ${Number(idCartao)};`
+
+    if (statusCartao) {
+      retorno = new returnClass("OK", 200, true, false, statusCartao)
+      res.status(200).json(retorno)
+    }
+    else {
+      retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
+      res.status(500).json(retorno)
+    }
+  }
+
+  static async mostraSetorFuncionarioPeloCartao(req, res) {
+    const erros = validationResult(req)
+    if(!erros.isEmpty()){
+      return res.status(400).json({erros: erros.array()})
+    }
+
+    const { idCartao } = req.params
+    let retorno = {}
+
+    const funcionarioSetor = await Generic.$queryRaw`
+      SELECT
+        "FU".nome_funcionario,
+        "SE".nome_setor
+      FROM "Cartoes" AS "CA"
+      INNER JOIN "Usuarios" AS "US"
+          ON  "US".id_usuario = "CA".id_usuario
+      INNER JOIN "Funcionarios" AS "FU"
+          ON  "FU".id_funcionario = "US".id_funcionario
+      INNER JOIN "Setores" AS "SE"
+          ON  "SE".id_setor = "FU".id_setor
+      WHERE "CA".id_cartao = ${Number(idCartao)}
+    ;`
+
+    if (funcionarioSetor) {
+      retorno = new returnClass("OK", 200, true, false, funcionarioSetor)
+      res.status(200).json(retorno)
+    }
+    else {
+      retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
+      res.status(500).json(retorno)
     }
   }
 
