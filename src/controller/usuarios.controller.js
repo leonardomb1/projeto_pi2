@@ -57,11 +57,28 @@ export default class UsuarioController {
       where: {
         nome_usuario: nomeUsuario,
         senha_usuario: senhaUsuario
+      },
+      include: {
+        funcionario: {
+          include: {
+            setor: true
+          }
+        }
       }
     })
 
+    const user = 
+      {
+        nomeUsuario: login.nome_usuario,
+        idUsuario: login.id_usuario, 
+        admin: login.admin,
+        funcionario: login.funcionario.nome_funcionario,
+        funcionario: login.funcionario.nome_funcionario,
+        setor: login.funcionario.setor
+      }
+
     if (login !== null) {
-      retorno = new returnClass("OK", 200, true, false, login.id_usuario)
+      retorno = new returnClass("OK", 200, true, false, user)
       return res.status(200).json(retorno)
     } else {
       retorno = new returnClass("Não Autorizado", 401, false, true, null)
