@@ -33,8 +33,14 @@ export default class UsuarioController {
       }
     })
 
+    const dadosUsuario = {
+      idUsuario: usuarios?.id_usuario ?? 0,
+      nomeUsuario: usuarios?.nome_usuario ?? "",
+      admin: usuarios?.admin ?? false
+    }
+
     if (usuarios) {
-      retorno = new returnClass("OK", 200, true, false, usuarios)
+      retorno = new returnClass("OK", 200, true, false, dadosUsuario)
       res.status(200).json(retorno)
     }
     else {
