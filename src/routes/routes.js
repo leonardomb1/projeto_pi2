@@ -14,7 +14,7 @@ import PilarController from '../controller/pilares.controller.js'
 import {getOneSetorValidation, createSetorValidation, updateSetorValidation} from '../validations/setor.validation.js'
 import {getOneFuncValidation, createFuncValidation, updateFuncValidation} from '../validations/funcionarios.validation.js'
 import {getOneUserValidation, createUserValidation, updateUserValidation, loginUserValidation} from '../validations/usuarios.validation.js'
-import {getOneCartaoValidation, createCartaoValidation, updateCartaoValidation, getCartaoByUserValidation} from "../validations/cartoes.validation.js"
+import {getOneCartaoValidation, createCartaoValidation, updateCartaoValidation, getCartaoByUserValidation, getByPilarValidation} from "../validations/cartoes.validation.js"
 import {getOneAnaliseValidation, createAnaliseValidation, updateAnaliseValidation, getAnaliseByCartaoValidation} from "../validations/analises.validation.js"
 
 import { createCartaoPilarValidation } from "../validations/cartoes_pilares.validation.js"
@@ -54,6 +54,7 @@ router.get('/cartoes/user/:idUsuario', getCartaoByUserValidation, CartoesControl
 router.delete('/cartoes/:idCartao', getOneCartaoValidation, CartoesController.delete)
 router.get('/cartoes/funcSetor/:idCartao', getOneCartaoValidation, CartoesController.mostraSetorFuncionarioPeloCartao)
 router.get('/cartoes/status/:idCartao', getOneCartaoValidation, CartoesController.mostraStatusCartao)
+router.post('/cartoes/pilares', getByPilarValidation, CartoesController.mostraCartoesPorNomePilar)
 
 // Rotas de Usuarios
 router.get('/usuarios', UsuarioController.index)

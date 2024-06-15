@@ -153,6 +153,41 @@ export default class CartoesController {
     }
   }
 
+  static async mostraCartoesPorNomePilar(req, res) {
+    const erros = validationResult(req)
+    if(!erros.isEmpty()){
+      return res.status(400).json({erros: erros.array()})
+    }
+
+    const { nome_pilar:nome_pilar } = req.body
+
+    let retorno = {}
+    let listaCartoes = []
+    for(const pilar of nome_pilar) {
+      const cartoes = await Cartoes.findFirst({
+        where: {
+          cartoes_pilares: {
+            some: {
+              pilar: {
+                nome_pilar: pilar
+              }
+            }
+          }
+        }
+      })
+
+      listaCartoes.push(cartoes)  
+    }
+
+    if(listaCartoes.length == 0) {
+      retorno = new returnClass("Não encontrado!", 404, false, true, undefined)
+      return res.status(404).json(retorno)
+    } else {
+      retorno = new returnClass("Sucesso!", 200, true, false, listaCartoes)
+      return res.status(200).json(retorno)
+    }
+  }
+
   
   //MOSTRA CARTÃO
   static async getManyByUserId(req, res) {
