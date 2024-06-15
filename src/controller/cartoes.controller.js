@@ -204,7 +204,11 @@ export default class CartoesController {
       },
       include: {
         analise: true,
-        cartoes_pilares: true
+        cartoes_pilares: {
+          include: {
+            pilar: true
+          }
+        }
       }
     })
 
