@@ -86,3 +86,8 @@ model Pilares {
   cartoes_pilares Cartoes_Pilares[]
   usuario_pilares Usuarios_Pilares[]
 }
+
+model Analistas {
+  id_analista Int @unique 
+  id_setor_analise Int?
+}
