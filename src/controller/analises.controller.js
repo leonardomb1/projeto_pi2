@@ -16,20 +16,15 @@ export default class AnaliseController {
   }
 
   static async create(req, res) {
-    const { valor_nota, id_cartao, id_analista, status_analise, observacao } = req.body;
+    const { valor_nota, id_cartao, id_usuario, status_analise, observacao } = req.body;
     let retorno = {};
-
-    if (!req.body || !req.body.valor_nota) {
-      const retorno = new returnClass("Necessário informar campo obrigatório!", 400, false, true, undefined);
-      return res.status(400).json(retorno);
-    }
 
     try {
       const createdAnalises = await Analise.create({
         data: {
             valor_nota,
             id_cartao,
-            id_analista,
+            id_usuario,
             status_analise,
             observacao
         }
@@ -66,7 +61,7 @@ export default class AnaliseController {
 
   static async update(req, res) {
     const { idAnalise } = req.params
-    const { valor_nota, id_cartao, id_analista, status, obs  } = req.body
+    const { valor_nota, id_cartao, id_usuario, status, obs  } = req.body
     let retorno = {}
     try {
       const analises = await Analise.findUnique({
@@ -84,7 +79,7 @@ export default class AnaliseController {
         ...analises,
         valor_nota,
         id_cartao,
-        id_analista,
+        id_usuario,
         status,
         obs
       }
