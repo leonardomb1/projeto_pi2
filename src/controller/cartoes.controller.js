@@ -173,6 +173,13 @@ export default class CartoesController {
               }
             }
           }
+        },
+        include: {
+          cartoes_pilares: {
+            select: {
+              pilar: true
+            }
+          }
         }
       })
 
@@ -206,8 +213,12 @@ export default class CartoesController {
         analise: true,
         cartoes_pilares: {
           include: {
-            pilar: true
-          }
+            pilar: {
+              select: {
+                nome_pilar: true
+              }
+            }
+          },
         }
       }
     })
