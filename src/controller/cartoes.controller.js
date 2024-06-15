@@ -176,7 +176,7 @@ export default class CartoesController {
         }
       })
 
-      listaCartoes.push(cartoes)  
+      listaCartoes.push(...cartoes)  
     }
 
     if(listaCartoes.length == 0) {
