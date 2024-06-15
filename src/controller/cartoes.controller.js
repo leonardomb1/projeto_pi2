@@ -164,7 +164,7 @@ export default class CartoesController {
     let retorno = {}
     let listaCartoes = []
     for(const pilar of nome_pilar) {
-      const cartoes = await Cartoes.findFirst({
+      const cartoes = await Cartoes.findMany({
         where: {
           cartoes_pilares: {
             some: {
