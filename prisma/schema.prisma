@@ -50,6 +50,7 @@ model Cartoes {
   usuario Usuarios @relation(fields: [id_usuario], references: [id_usuario])
   analise Analises[]
   cartoes_pilares Cartoes_Pilares []
+  analises_pilares Analises_Pilares[]
 }
 
 model Analises {
@@ -85,7 +86,9 @@ model Analises_Pilares{
   id Int @id @default(autoincrement())
   id_analise Int
   id_pilar Int
+  id_cartao Int
   analise Analises @relation(fields: [id_analise], references: [id_analise])
+  cartao Cartoes @relation(fields: [id_cartao], references: [id_cartao])
   pilar Pilares @relation(fields: [id_pilar], references: [id_pilar])
 }
 

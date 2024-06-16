@@ -281,6 +281,9 @@ export default class CartoesController {
 
     let listaCartoes = Array.from(uniqueCartoes.values())
 
+    console.log(nome_pilar)
+    console.log(listaCartoes)
+
     if (listaCartoes.length === 0) {
       retorno = new returnClass("Não encontrado", 404, false, true, undefined)
       return res.status(404).json(retorno)
@@ -322,7 +325,7 @@ export default class CartoesController {
       return res.status(200).json(retorno)
     }
     else {
-      retorno = new returnClass("Não encontrado", 404, false, true, undefined)
+      retorno = new returnClass("Não encontrado", 404, false, true, {data:0})
       return res.status(404).json(retorno)
     }
   }

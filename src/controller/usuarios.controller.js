@@ -80,12 +80,12 @@ export default class UsuarioController {
 
     const user = 
       {
-        nomeUsuario: login.nome_usuario ?? "",
-        idUsuario: login.id_usuario ?? "", 
-        admin: login.admin ?? "",
-        funcionario: login.funcionario?.nome_funcionario ?? "",
-        pilares: login.usuario_pilares?.flatMap(x => x.pilar) ?? "",
-        setor: login.funcionario?.setor.nome_setor ?? ""
+        nomeUsuario: login?.nome_usuario ?? "",
+        idUsuario: login?.id_usuario ?? "", 
+        admin: login?.admin ?? "",
+        funcionario: login?.funcionario?.nome_funcionario ?? "",
+        pilares: login?.usuario_pilares?.flatMap(x => x.pilar) ?? "",
+        setor: login?.funcionario?.setor.nome_setor ?? ""
       }
 
     if (login !== null) {
