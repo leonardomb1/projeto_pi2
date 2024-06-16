@@ -156,7 +156,7 @@ export default class CartoesController {
       retorno = new returnClass("OK", 200, true, false, aprovacoes)
       res.status(200).json(retorno)
     } else {
-      retorno = new returnClass("Não encontrado", 404, false, true, undefined)
+      retorno = new returnClass("Não encontrado", 404, false, true, {data: 0})
       res.status(404).json(retorno)
     }
 
@@ -325,7 +325,7 @@ export default class CartoesController {
       return res.status(200).json(retorno)
     }
     else {
-      retorno = new returnClass("Não encontrado", 404, false, true, {data:0})
+      retorno = new returnClass("Não encontrado", 404, false, true, {data: 0 })
       return res.status(404).json(retorno)
     }
   }
