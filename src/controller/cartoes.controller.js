@@ -2,10 +2,10 @@ import Generic from "../models/generic.model.js";
 import Cartoes from "../models/cartoes.model.js";
 import CartoesPilares from "../models/cartoes_pilares.model.js";
 import returnClass from "../types/returnClass.js";
-import {validationResult} from "express-validator";
+import { validationResult } from "express-validator";
 
 export default class CartoesController {
-//MOSTRA CARTÕES
+  //MOSTRA CARTÕES
   static async index(req, res) {
     const cartoes = await Cartoes.findMany({
       include: {
@@ -24,24 +24,24 @@ export default class CartoesController {
     }
   }
 
-//CRIA CARTÃO
+  //CRIA CARTÃO
   static async create(req, res) {
     const erros = validationResult(req)
-    if(!erros.isEmpty()){
-      return res.status(400).json({erros: erros.array()})
+    if (!erros.isEmpty()) {
+      return res.status(400).json({ erros: erros.array() })
     }
 
-    const { id_usuario , desc_problema, desc_ideia, nome_projeto, url_imagem } = req.body;
+    const { id_usuario, desc_problema, desc_ideia, nome_projeto, url_imagem } = req.body;
     let retorno = {};
 
     try {
       const createdCartoes = await Cartoes.create({
         data: {
-            id_usuario,
-            desc_problema,
-            desc_ideia,
-            nome_projeto,
-            url_imagem
+          id_usuario,
+          desc_problema,
+          desc_ideia,
+          nome_projeto,
+          url_imagem
         }
       });
 
@@ -56,8 +56,8 @@ export default class CartoesController {
 
   static async mostraStatusCartao(req, res) {
     const erros = validationResult(req)
-    if(!erros.isEmpty()){
-      return res.status(400).json({erros: erros.array()})
+    if (!erros.isEmpty()) {
+      return res.status(400).json({ erros: erros.array() })
     }
 
     const { idCartao } = req.params
@@ -128,10 +128,10 @@ export default class CartoesController {
     }
   }
 
-  static async mostraAprovadocoesPeloCartao(req,res) {
+  static async mostraAprovadocoesPeloCartao(req, res) {
     const erros = validationResult(req)
-    if(!erros.isEmpty()){
-      return res.status(400).json({erros: erros.array()})
+    if (!erros.isEmpty()) {
+      return res.status(400).json({ erros: erros.array() })
     }
 
     const { idCartao } = req.params
@@ -151,7 +151,7 @@ export default class CartoesController {
       INNER JOIN "Pilares" AS "PIL"
           ON  "PIL".id_pilar = "ANP".id_pilar
       WHERE "AN".id_cartao = ${Number(idCartao)}`
-    
+
     if (aprovacoes.length > 0) {
       retorno = new returnClass("OK", 200, true, false, aprovacoes)
       res.status(200).json(retorno)
@@ -164,8 +164,8 @@ export default class CartoesController {
 
   static async mostraSetorFuncionarioPeloCartao(req, res) {
     const erros = validationResult(req)
-    if(!erros.isEmpty()){
-      return res.status(400).json({erros: erros.array()})
+    if (!erros.isEmpty()) {
+      return res.status(400).json({ erros: erros.array() })
     }
 
     const { idCartao } = req.params
@@ -194,11 +194,11 @@ export default class CartoesController {
     }
   }
 
-//MOSTRA CARTÃO
+  //MOSTRA CARTÃO
   static async getOneById(req, res) {
     const erros = validationResult(req)
-    if(!erros.isEmpty()){
-      return res.status(400).json({erros: erros.array()})
+    if (!erros.isEmpty()) {
+      return res.status(400).json({ erros: erros.array() })
     }
 
     const { idCartao } = req.params
@@ -225,15 +225,15 @@ export default class CartoesController {
 
   static async mostraCartoesPorNomePilar(req, res) {
     const erros = validationResult(req)
-    if(!erros.isEmpty()){
-      return res.status(400).json({erros: erros.array()})
+    if (!erros.isEmpty()) {
+      return res.status(400).json({ erros: erros.array() })
     }
 
-    const { nome_pilar : nome_pilar } = req.body
+    const { nome_pilar: nome_pilar } = req.body
     let retorno = {}
-    let listaCartoes = []
+    let uniqueCartoes = new Map()
 
-    for(const pilar of nome_pilar) {
+    for (const pilar of nome_pilar) {
       const cartoes = await Generic.$queryRaw`
         WITH CARTOES_PED AS (
             SELECT
@@ -274,10 +274,14 @@ export default class CartoesController {
             WHERE "PED".id_cartao = "CAP".id_cartao
         );`
 
-      listaCartoes.push(...cartoes)
+      for (const cartao of cartoes) {
+        uniqueCartoes.set(cartao.id_cartao, cartao)
+      }
     }
 
-    if(listaCartoes.length === 0) {
+    let listaCartoes = Array.from(uniqueCartoes.values())
+
+    if (listaCartoes.length === 0) {
       retorno = new returnClass("Não encontrado", 404, false, true, undefined)
       return res.status(404).json(retorno)
     } else {
@@ -285,12 +289,12 @@ export default class CartoesController {
       return res.status(200).json(retorno)
     }
   }
-  
+
   //MOSTRA CARTÃO
   static async getManyByUserId(req, res) {
     const erros = validationResult(req)
-    if(!erros.isEmpty()){
-      return res.status(400).json({erros: erros.array()})
+    if (!erros.isEmpty()) {
+      return res.status(400).json({ erros: erros.array() })
     }
 
     const { idUsuario } = req.params
@@ -323,40 +327,40 @@ export default class CartoesController {
     }
   }
 
-//EDITA CARTÃO
+  //EDITA CARTÃO
   static async update(req, res) {
     const erros = validationResult(req)
-    if(!erros.isEmpty()){
-      return res.status(400).json({erros: erros.array()})
+    if (!erros.isEmpty()) {
+      return res.status(400).json({ erros: erros.array() })
     }
 
     const { idCartao } = req.params
-    const { desc_problema, desc_ideia, nome_projeto  } = req.body
+    const { desc_problema, desc_ideia, nome_projeto } = req.body
     let retorno = {}
 
-      const cartoes = await Cartoes.findUnique({
+    const cartoes = await Cartoes.findUnique({
+      where: {
+        id_cartao: Number(idCartao)
+      }
+    })
+
+    if (!cartoes) {
+      retorno = new returnClass("Não encontrado", 404, false, true, undefined)
+      return res.status(404).json(retorno)
+    }
+
+    try {
+      const updatedCartoes = await Cartoes.update({
         where: {
           id_cartao: Number(idCartao)
+        },
+        data: {
+          nome_projeto,
+          desc_ideia,
+          desc_problema
         }
       })
-
-      if (!cartoes) {
-        retorno = new returnClass("Não encontrado", 404, false, true, undefined)
-        return res.status(404).json(retorno)
-      }
-
-      try{
-        const updatedCartoes = await Cartoes.update({
-          where: {
-            id_cartao: Number(idCartao)
-          },
-          data: {
-            nome_projeto,
-            desc_ideia,
-            desc_problema
-          }
-        })
-      return res.status(200).json({message:"Funcionário atualizado com sucesso!", updatedCartoes})
+      return res.status(200).json({ message: "Funcionário atualizado com sucesso!", updatedCartoes })
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
@@ -367,38 +371,38 @@ export default class CartoesController {
   //DELETA CARTÃO
   static async delete(req, res) {
     const erros = validationResult(req)
-    if(!erros.isEmpty()){
-      return res.status(400).json({erros: erros.array()})
+    if (!erros.isEmpty()) {
+      return res.status(400).json({ erros: erros.array() })
     }
 
     const { idCartao } = req.params
     let retorno = {}
 
     const cartoes = await Cartoes.findUnique({
-        where: {
-            id_cartao: Number(idCartao)
-        }
-      })
-
-      if (!cartoes) {
-        retorno = new returnClass("Não encontrado", 404, false, true, undefined)
-        return res.status(404).json(retorno)
+      where: {
+        id_cartao: Number(idCartao)
       }
+    })
 
-      try{ 
-        await Cartoes.delete({
-        where:{
+    if (!cartoes) {
+      retorno = new returnClass("Não encontrado", 404, false, true, undefined)
+      return res.status(404).json(retorno)
+    }
+
+    try {
+      await Cartoes.delete({
+        where: {
           id_cartao: Number(req.params.idCartao)
         }
       })
 
-        await CartoesPilares.delete({
-          where:{
-            id_cartao: Number(req.params.idCartao)
-          }
-        })
-        
-        return res.status(200).json({message:"Cartão deletado com sucesso!"})
+      await CartoesPilares.delete({
+        where: {
+          id_cartao: Number(req.params.idCartao)
+        }
+      })
+
+      return res.status(200).json({ message: "Cartão deletado com sucesso!" })
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro interno do Servidor", 500, false, true, undefined)
