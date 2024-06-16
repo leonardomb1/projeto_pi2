@@ -244,7 +244,7 @@ export default class CartoesController {
                 ON  "CAP".id_cartao = "CA".id_cartao
             INNER JOIN "Pilares" AS "PIL"
                 ON  "PIL".id_pilar = "CAP".id_pilar
-            AND NOT EXISTS (
+            WHERE NOT EXISTS (
                 SELECT 1
                 FROM "Analises" AS "AN"
                 INNER JOIN "Analises_Pilares" AS "ANP"
