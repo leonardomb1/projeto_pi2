@@ -63,23 +63,60 @@ export default class CartoesController {
     const { idCartao } = req.params
     let retorno = {}
 
-    const statusCartao = await Generic.$queryRaw`
-      SELECT 
-        id_cartao,
-        CASE 
-            WHEN status_analise IS NULL THEN 'Pendente'
-            WHEN status_analise = 1 THEN 'Aprovado'
-            WHEN status_analise = 0 THEN 'Reprovado'
-        END AS status_cartao
+    const statusCartao = await Generic.$queryRaw`;
+      WITH MINIMO AS (
+          SELECT
+              id_cartao,
+              COUNT(1) as qt_min
+          FROM "Cartoes_Pilares"
+          GROUP BY id_cartao
+      ),
+
+      APROVADO AS (
+          SELECT
+              "AN".id_cartao,
+              COUNT(1) AS qt_aprovado
+          FROM "Analises_Pilares" AS "ANP"
+          INNER JOIN "Analises" AS "AN"
+              ON  "AN".id_analise = "ANP".id_analise AND
+                  "AN".status_analise = 1
+          GROUP BY "AN".id_cartao
+      ),
+
+      REPROVADO AS (
+          SELECT
+              "AN".id_cartao,
+              COUNT(1) AS qt_reprovado
+          FROM "Analises_Pilares" AS "ANP"
+          INNER JOIN "Analises" AS "AN"
+              ON  "AN".id_analise = "ANP".id_analise AND 
+                  "AN".status_analise = 0
+          GROUP BY "AN".id_cartao
+      )
+
+      SELECT
+          id_cartao,
+          CASE 
+              WHEN qt_min = qt_aprovado + qt_reprovado THEN
+                  CASE
+                      WHEN qt_aprovado > qt_reprovado THEN 'Aprovado'
+                      ELSE 'Reprovado'
+                  END
+              ELSE 'Pendente'
+          END AS status_cartao
       FROM (
-        SELECT
-            "CA".id_cartao,
-            "AN".status_analise
-        FROM "Cartoes" AS "CA"
-        LEFT OUTER JOIN "Analises" AS "AN"
-            ON  "AN".id_cartao = "CA".id_cartao
-        ) res
-      WHERE id_cartao = ${Number(idCartao)};`
+          SELECT
+              "MIN".id_cartao,
+              qt_min,
+              CASE WHEN qt_aprovado IS NULL THEN 0 END AS qt_aprovado,
+              CASE WHEN qt_reprovado IS NULL THEN 0 END AS qt_reprovado
+          FROM MINIMO AS "MIN"
+          LEFT OUTER JOIN APROVADO AS "APR"
+              ON  "APR".id_cartao = "MIN".id_cartao
+          LEFT OUTER JOIN REPROVADO AS "REP"
+              ON  "REP".id_cartao = "MIN".id_cartao
+      ) res
+      WHERE id_cartao = ${Number(idCartao)}`
 
     if (statusCartao) {
       retorno = new returnClass("OK", 200, true, false, statusCartao)
@@ -194,7 +231,6 @@ export default class CartoesController {
       return res.status(200).json(retorno)
     }
   }
-
   
   //MOSTRA CARTÃO
   static async getManyByUserId(req, res) {
