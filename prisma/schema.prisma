@@ -62,6 +62,7 @@ model Analises {
   data_analise DateTime @default(now())
   usuario Usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
   cartao Cartoes @relation(fields: [id_cartao], references: [id_cartao])
+  analises_pilares Analises_Pilares[]
 }
 
 model Cartoes_Pilares{
@@ -80,11 +81,20 @@ model Usuarios_Pilares{
   usuario Usuarios @relation(fields: [id_usuario], references: [id_usuario])  
 }
 
+model Analises_Pilares{
+  id Int @id @default(autoincrement())
+  id_analise Int
+  id_pilar Int
+  analise Analises @relation(fields: [id_analise], references: [id_analise])
+  pilar Pilares @relation(fields: [id_pilar], references: [id_pilar])
+}
+
 model Pilares {
   id_pilar Int @id @default(autoincrement())
   nome_pilar String
   cartoes_pilares Cartoes_Pilares[]
   usuario_pilares Usuarios_Pilares[]
+  analises_pilares Analises_Pilares[]
 }
 
 model Analistas {

@@ -30,7 +30,7 @@ export default class AnaliseController {
         }
       });
 
-      retorno = new returnClass("Sucesso!", 201, true, false, createdAnalises);
+      retorno = new returnClass("Sucesso!", 201, true, false, createdAnalises.id_analise);
       return res.status(201).json(retorno);
     } catch (error) {
       console.log(error);

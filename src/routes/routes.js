@@ -9,6 +9,7 @@ import UsuarioController from '../controller/usuarios.controller.js'
 import CartoesPilaresController from '../controller/cartoes_pilares.controller.js'
 import ErrorController from '../controller/error.controller.js'
 import PilarController from '../controller/pilares.controller.js'
+import AnalisePilaresController from '../controller/analises_pilares.controller.js'
 
 //VALIDATIONS
 import {getOneSetorValidation, createSetorValidation, updateSetorValidation} from '../validations/setor.validation.js'
@@ -18,6 +19,7 @@ import {getOneCartaoValidation, createCartaoValidation, updateCartaoValidation, 
 import {getOneAnaliseValidation, createAnaliseValidation, updateAnaliseValidation, getAnaliseByCartaoValidation} from "../validations/analises.validation.js"
 
 import { createCartaoPilarValidation } from "../validations/cartoes_pilares.validation.js"
+import { createAnalisePilarValidation } from "../validations/analises_pilares.validation.js"
 import { getOnePilarValidation} from "../validations/pilares.validation.js"
 
 
@@ -72,5 +74,6 @@ router.post('/pilares/buscar', PilarController.getByList)
 // Rota do Cartão-Pilar
 router.post('/cartaoPilar', createCartaoPilarValidation, CartoesPilaresController.create )
 
-
+// Rota da Analise-Pilar
+router.post('/analisesPilar', createAnalisePilarValidation, AnalisePilaresController.create)
 export default router
