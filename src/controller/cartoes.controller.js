@@ -235,31 +235,44 @@ export default class CartoesController {
 
     for(const pilar of nome_pilar) {
       const cartoes = await Generic.$queryRaw`
+        WITH CARTOES_PED AS (
+            SELECT
+                "CA".*,
+                array_agg("PIL".nome_pilar) AS nome_pilar
+            FROM "Cartoes" AS "CA"
+            INNER JOIN "Cartoes_Pilares" AS "CAP" 
+                ON  "CAP".id_cartao = "CA".id_cartao
+            INNER JOIN "Pilares" AS "PIL"
+                ON  "PIL".id_pilar = "CAP".id_pilar
+            AND NOT EXISTS (
+                SELECT 1
+                FROM "Analises" AS "AN"
+                INNER JOIN "Analises_Pilares" AS "ANP"
+                    ON  "AN".id_analise = "ANP".id_analise
+                WHERE
+                    "AN".id_cartao = "CA".id_cartao AND
+                    "ANP".id_pilar = "CAP".id_pilar
+            )
+            GROUP BY
+                "CA".id_cartao,
+                "CA".id_usuario,
+                "CA".nome_projeto,
+                "CA".desc_problema,
+                "CA".desc_ideia,
+                "CA".url_imagem,
+                "CA".data_cartao
+        )
+
         SELECT
-            "CA".*,
-            array_agg("PIL".nome_pilar) AS nome_pilar
-        FROM "Cartoes" AS "CA"
-        INNER JOIN "Cartoes_Pilares" AS "CAP" 
-            ON  "CAP".id_cartao = "CA".id_cartao
-        INNER JOIN "Pilares" AS "PIL"
-            ON  "PIL".id_pilar = "CAP".id_pilar
-        WHERE NOT EXISTS (
-            SELECT 1
-            FROM "Analises" AS "AN"
-            INNER JOIN "Analises_Pilares" AS "ANP"
-                ON  "AN".id_analise = "ANP".id_analise
-            WHERE
-                "AN".id_cartao = "CA".id_cartao AND
-                "ANP".id_pilar = "CAP".id_pilar
-        ) AND "PIL".nome_pilar = ${pilar}
-        GROUP BY
-            "CA".id_cartao,
-            "CA".id_usuario,
-            "CA".nome_projeto,
-            "CA".desc_problema,
-            "CA".desc_ideia,
-            "CA".url_imagem,
-            "CA".data_cartao;`
+            "PED".*
+        FROM CARTOES_PED AS "PED"
+        WHERE EXISTS (
+            SELECT 1 FROM "Cartoes_Pilares" AS "CAP"
+            INNER JOIN "Pilares" AS "PIL" 
+                ON  "PIL".id_pilar = "CAP".id_pilar AND
+                nome_pilar = ${pilar}
+            WHERE "PED".id_cartao = "CAP".id_cartao
+        );`
 
       listaCartoes.push(...cartoes)
     }
