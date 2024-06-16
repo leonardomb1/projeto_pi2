@@ -59,7 +59,7 @@ export default class FuncionarioController {
             id_setor
         }
       });
-      retorno = new returnClass("Sucesso!", 201, true, false, createdFuncionarios);
+      retorno = new returnClass("OK", 201, true, false, createdFuncionarios);
       return res.status(201).json(retorno);
     } catch (error) {
       console.log(error);
@@ -85,7 +85,7 @@ export default class FuncionarioController {
       })
 
       if (!funcionarios) {
-        retorno = new returnClass("Funcionario inexistente!", 404, false, true, undefined)
+        retorno = new returnClass("Não encontrado", 404, false, true, undefined)
         return res.status(404).json(retorno)      
       }
 
@@ -96,7 +96,8 @@ export default class FuncionarioController {
           },
           data: req.body
         })
-      return res.status(200).json({message:"Funcionário atualizado com sucesso!", updateFuncionario})
+        retorno = new returnClass("OK", 204, true, false, undefined)
+        res.status(204).json(retorno)
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
@@ -122,7 +123,7 @@ export default class FuncionarioController {
       })
 
       if (!funcionarios) {
-        retorno = new returnClass("Funcionario inexistente!", 404, false, true, undefined)
+        retorno = new returnClass("Não encontrado", 404, false, true, undefined)
         return res.status(404).json(retorno)
       }
       await Funcionario.delete({
@@ -130,12 +131,13 @@ export default class FuncionarioController {
           id_funcionario: Number(req.params.idFuncionario)
         }
       })
-      res.json({message: "Funcionario deletado com sucesso!"})
 
+      retorno = new returnClass("OK", 204, true, false, undefined)
+      res.status(204).json(retorno)
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro interno do Servidor", 500, false, true, undefined)
-      return res.status(404).json(retorno)
+      return res.status(500).json(retorno)
     }
   }
 }

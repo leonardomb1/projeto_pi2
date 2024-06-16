@@ -57,6 +57,7 @@ router.delete('/cartoes/:idCartao', getOneCartaoValidation, CartoesController.de
 router.get('/cartoes/funcSetor/:idCartao', getOneCartaoValidation, CartoesController.mostraSetorFuncionarioPeloCartao)
 router.get('/cartoes/status/:idCartao', getOneCartaoValidation, CartoesController.mostraStatusCartao)
 router.post('/cartoes/pilares', getByPilarValidation, CartoesController.mostraCartoesPorNomePilar)
+router.get('/cartoes/aprovacoes/:idCartao', getOneCartaoValidation, CartoesController.mostraAprovadocoesPeloCartao)
 
 // Rotas de Usuarios
 router.get('/usuarios', UsuarioController.index)

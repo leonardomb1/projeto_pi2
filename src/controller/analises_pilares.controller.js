@@ -34,7 +34,7 @@ export default class AnalisePilaresController {
         }
 
         if (qtdeIgnorada < id_pilar.length) { 
-            retorno = new returnClass("OK", 200, true, false, {qtde_pilares: (id_pilar.length - qtdeIgnorada)})
+            retorno = new returnClass("OK", 201, true, false, {qtde_pilares: (id_pilar.length - qtdeIgnorada)})
             res.status(200).json(retorno)
         } else if (qtdeIgnorada === id_pilar.length) {
             retorno = new returnClass("Aprovação do Pilar já realizada!", 409, false, true, undefined)

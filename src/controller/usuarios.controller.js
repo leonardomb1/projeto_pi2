@@ -44,8 +44,8 @@ export default class UsuarioController {
       res.status(200).json(retorno)
     }
     else {
-      retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
-      res.status(500).json(retorno)
+      retorno = new returnClass("Não encontrado", 404, false, true, undefined)
+      res.status(404).json(retorno)
     }
   }
 
@@ -153,7 +153,10 @@ export default class UsuarioController {
         },
         data: req.body
       })
-      return res.status(200).json({ message: "Funcionário atualizado com sucesso!", updateUsuario })
+      
+      retorno = new returnClass("OK", 204, true, false, undefined)
+
+      res.status(204).json(retorno)
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
@@ -193,7 +196,7 @@ export default class UsuarioController {
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro interno do Servidor", 500, false, true, undefined)
-      return res.status(404).json(retorno)
+      return res.status(500).json(retorno)
     }
   }
 }

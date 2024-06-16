@@ -31,7 +31,7 @@ export default class CartoesPilaresController {
           createdCartoesPilares.push(cartaoPilar);
         }
   
-        retorno = new returnClass("Sucesso!", 201, true, false, createdCartoesPilares);
+        retorno = new returnClass("OK", 201, true, false, createdCartoesPilares);
         return res.status(201).json(retorno);
       } catch (error) {
         console.log(error);

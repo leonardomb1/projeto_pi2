@@ -30,7 +30,7 @@ export default class AnaliseController {
         }
       });
 
-      retorno = new returnClass("Sucesso!", 201, true, false, createdAnalises.id_analise);
+      retorno = new returnClass("OK", 201, true, false, createdAnalises.id_analise);
       return res.status(201).json(retorno);
     } catch (error) {
       console.log(error);
@@ -54,8 +54,8 @@ export default class AnaliseController {
       res.status(200).json(retorno)
     }
     else {
-      retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
-      res.status(500).json(retorno)
+      retorno = new returnClass("Não encontrado", 404, false, true, undefined)
+      res.status(404).json(retorno)
     }
   }
 
@@ -71,7 +71,7 @@ export default class AnaliseController {
       })
 
       if (!analises) {
-        retorno = new returnClass("Analise inexistente!", 404, false, true, undefined)
+        retorno = new returnClass("Não encontrado", 404, false, true, undefined)
         return res.status(404).json(retorno)
       }
 
@@ -105,17 +105,17 @@ export default class AnaliseController {
       })
 
       if (!analises) {
-        retorno = new returnClass("Setor inexistente!", 404, false, true, undefined)
+        retorno = new returnClass("Não encontrado", 404, false, true, undefined)
         return res.status(404).json(retorno)
       }
 
       Analise.delete(analises)
-      retorno = new returnClass("Setor deletado com sucesso", 204, true, false, undefined)
+      retorno = new returnClass("OK", 204, true, false, undefined)
       return res.status(204).json(retorno)
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro interno do Servidor", 500, false, true, undefined)
-      return res.status(404).json(retorno)
+      return res.status(500).json(retorno)
     }
   }
 }

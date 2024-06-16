@@ -123,9 +123,43 @@ export default class CartoesController {
       res.status(200).json(retorno)
     }
     else {
-      retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
-      res.status(500).json(retorno)
+      retorno = new returnClass("Não encontrado", 404, false, true, undefined)
+      res.status(404).json(retorno)
     }
+  }
+
+  static async mostraAprovadocoesPeloCartao(req,res) {
+    const erros = validationResult(req)
+    if(!erros.isEmpty()){
+      return res.status(400).json({erros: erros.array()})
+    }
+
+    const { idCartao } = req.params
+    let retorno = {}
+
+    const aprovacoes = await Generic.$queryRaw`
+      SELECT
+          "AN".id_cartao,
+          "PIL".nome_pilar,
+          "AN".valor_nota,
+          "AN".status_analise,
+          "AN".observacao,
+          "AN".data_analise
+      FROM "Analises" AS "AN"
+      INNER JOIN "Analises_Pilares" AS "ANP" 
+          ON  "ANP".id_analise = "AN".id_analise
+      INNER JOIN "Pilares" AS "PIL"
+          ON  "PIL".id_pilar = "ANP".id_pilar
+      WHERE "AN".id_cartao = ${Number(idCartao)}`
+    
+    if (aprovacoes.length > 0) {
+      retorno = new returnClass("OK", 200, true, false, aprovacoes)
+      res.status(200).json(retorno)
+    } else {
+      retorno = new returnClass("Não encontrado", 404, false, true, undefined)
+      res.status(404).json(retorno)
+    }
+
   }
 
   static async mostraSetorFuncionarioPeloCartao(req, res) {
@@ -148,16 +182,15 @@ export default class CartoesController {
           ON  "FU".id_funcionario = "US".id_funcionario
       INNER JOIN "Setores" AS "SE"
           ON  "SE".id_setor = "FU".id_setor
-      WHERE "CA".id_cartao = ${Number(idCartao)}
-    ;`
+      WHERE "CA".id_cartao = ${Number(idCartao)};`
 
-    if (funcionarioSetor) {
+    if (funcionarioSetor.length > 0) {
       retorno = new returnClass("OK", 200, true, false, funcionarioSetor)
       res.status(200).json(retorno)
     }
     else {
-      retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
-      res.status(500).json(retorno)
+      retorno = new returnClass("Não encontrado", 404, false, true, undefined)
+      res.status(404).json(retorno)
     }
   }
 
@@ -185,8 +218,8 @@ export default class CartoesController {
       res.status(200).json(retorno)
     }
     else {
-      retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
-      res.status(500).json(retorno)
+      retorno = new returnClass("Não encontrado", 404, false, true, undefined)
+      res.status(404).json(retorno)
     }
   }
 
@@ -196,35 +229,43 @@ export default class CartoesController {
       return res.status(400).json({erros: erros.array()})
     }
 
-    const { nome_pilar:nome_pilar } = req.body
-
+    const { nome_pilar : nome_pilar } = req.body
     let retorno = {}
     let listaCartoes = []
-    for(const pilar of nome_pilar) {
-      const cartoes = await Cartoes.findMany({
-        where: {
-          cartoes_pilares: {
-            some: {
-              pilar: {
-                nome_pilar: pilar
-              }
-            }
-          }
-        },
-        include: {
-          cartoes_pilares: {
-            select: {
-              pilar: true
-            }
-          }
-        }
-      })
 
-      listaCartoes.push(...cartoes)  
+    for(const pilar of nome_pilar) {
+      const cartoes = await Generic.$queryRaw`
+        SELECT
+            "CA".*,
+            array_agg("PIL".nome_pilar) AS nome_pilar
+        FROM "Cartoes" AS "CA"
+        INNER JOIN "Cartoes_Pilares" AS "CAP" 
+            ON  "CAP".id_cartao = "CA".id_cartao
+        INNER JOIN "Pilares" AS "PIL"
+            ON  "PIL".id_pilar = "CAP".id_pilar
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM "Analises" AS "AN"
+            INNER JOIN "Analises_Pilares" AS "ANP"
+                ON  "AN".id_analise = "ANP".id_analise
+            WHERE
+                "AN".id_cartao = "CA".id_cartao AND
+                "ANP".id_pilar = "CAP".id_pilar
+        ) AND "PIL".nome_pilar = ${pilar}
+        GROUP BY
+            "CA".id_cartao,
+            "CA".id_usuario,
+            "CA".nome_projeto,
+            "CA".desc_problema,
+            "CA".desc_ideia,
+            "CA".url_imagem,
+            "CA".data_cartao;`
+
+      listaCartoes.push(...cartoes)
     }
 
-    if(listaCartoes.length == 0) {
-      retorno = new returnClass("Não encontrado!", 404, false, true, undefined)
+    if(listaCartoes.length === 0) {
+      retorno = new returnClass("Não encontrado", 404, false, true, undefined)
       return res.status(404).json(retorno)
     } else {
       retorno = new returnClass("Sucesso!", 200, true, false, listaCartoes)
@@ -264,8 +305,8 @@ export default class CartoesController {
       return res.status(200).json(retorno)
     }
     else {
-      retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
-      return res.status(500).json(retorno)
+      retorno = new returnClass("Não encontrado", 404, false, true, undefined)
+      return res.status(404).json(retorno)
     }
   }
 
@@ -287,7 +328,7 @@ export default class CartoesController {
       })
 
       if (!cartoes) {
-        retorno = new returnClass("Cartão inexistente!", 404, false, true, undefined)
+        retorno = new returnClass("Não encontrado", 404, false, true, undefined)
         return res.status(404).json(retorno)
       }
 
@@ -327,7 +368,7 @@ export default class CartoesController {
       })
 
       if (!cartoes) {
-        retorno = new returnClass("Cartão inexistente!", 404, false, true, undefined)
+        retorno = new returnClass("Não encontrado", 404, false, true, undefined)
         return res.status(404).json(retorno)
       }
 
@@ -348,7 +389,7 @@ export default class CartoesController {
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro interno do Servidor", 500, false, true, undefined)
-      return res.status(404).json(retorno)
+      return res.status(500).json(retorno)
     }
   }
 }

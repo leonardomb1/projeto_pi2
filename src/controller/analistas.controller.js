@@ -32,7 +32,7 @@ export default class AnalistaController {
         }
       });
 
-      retorno = new returnClass("Sucesso!", 201, true, false, createdAnalista);
+      retorno = new returnClass("OK", 201, true, false, createdAnalista);
       return res.status(201).json(retorno);
     } catch (error) {
       console.log(error);
@@ -56,8 +56,8 @@ export default class AnalistaController {
       res.status(200).json(retorno)
     }
     else {
-      retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
-      res.status(500).json(retorno)
+      retorno = new returnClass("Não encontrado", 404, false, true, undefined)
+      res.status(404).json(retorno)
     }
   }
 
