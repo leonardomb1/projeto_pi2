@@ -84,7 +84,7 @@ export default class UsuarioController {
         idUsuario: login.id_usuario ?? "", 
         admin: login.admin ?? "",
         funcionario: login.funcionario?.nome_funcionario ?? "",
-        pilares: login.usuario_pilares?.map(x => x.pilar.nome_pilar) ?? "",
+        pilares: login.usuario_pilares?.flatMap(x => x.pilar) ?? "",
         setor: login.funcionario?.setor.nome_setor ?? ""
       }
 
