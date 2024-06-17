@@ -38,7 +38,7 @@ export default class AnalisePilaresController {
                     ON "ANP".id_analise = "AN".id_analise 
                 WHERE "ANP".id_pilar = ${pilar};`
 
-            if (procuraSeAprovado > 0) {
+            if (procuraSeAprovado.length > 0) {
                 qtdeIgnorada++
                 continue
             }
