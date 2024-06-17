@@ -17,7 +17,6 @@ model Setores {
   id_setor Int @id @default(autoincrement())
   nome_setor String @unique
   funcionarios Funcionarios[]
-  analistas Analistas[]
 }
 
 model Funcionarios {
@@ -26,7 +25,6 @@ model Funcionarios {
   id_setor Int
   setor Setores @relation(fields: [id_setor], references: [id_setor])
   usuario Usuarios[]
-  analistas Analistas[]
 }
 
 model Usuarios {
@@ -34,39 +32,41 @@ model Usuarios {
   nome_usuario String @unique
   senha_usuario String
   id_funcionario Int?
+  admin Boolean
   funcionario Funcionarios? @relation(fields: [id_funcionario], references: [id_funcionario])
   cartoes Cartoes[]
+  analises Analises[]
+  usuario_pilares Usuarios_Pilares[]
 }
 
 model Cartoes {
   id_cartao Int @id @default(autoincrement())
   id_usuario Int
+  nome_projeto String
   desc_problema String 
   desc_ideia String
+  url_imagem String?
+  valor_nota Int
   data_cartao DateTime @default(now())
   usuario Usuarios @relation(fields: [id_usuario], references: [id_usuario])
-  analises Analises[]
+  analise Analises[]
   cartoes_pilares Cartoes_Pilares []
-}
-
-model Analistas {
-  id_analista Int @unique 
-  id_setor_analise Int?
-  funcionario Funcionarios @relation(fields: [id_analista], references: [id_funcionario])
-  setor_analise Setores? @relation(fields: [id_setor_analise], references: [id_setor])
-  analises Analises[]
+  analises_pilares Analises_Pilares[]
+  analises_pontuacao AnalisesPontuacao[]
 }
 
 model Analises {
   id_analise Int @id @default(autoincrement())
   valor_nota Float
   id_cartao Int
-  id_analista Int
+  id_usuario Int
   status_analise Int @default(0)
   observacao String 
   data_analise DateTime @default(now())
-  analista Analistas @relation(fields: [id_analista], references: [id_analista])
+  usuario Usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
   cartao Cartoes @relation(fields: [id_cartao], references: [id_cartao])
+  analises_pilares Analises_Pilares[]
+  analises_pontiacao AnalisesPontuacao[]
 }
 
 model Cartoes_Pilares{
@@ -77,8 +77,44 @@ model Cartoes_Pilares{
   cartao Cartoes @relation(fields: [id_cartao], references: [id_cartao])
 }
 
+model Usuarios_Pilares{
+  id Int @id @default(autoincrement())
+  id_usuario Int
+  id_pilar Int
+  pilar Pilares @relation(fields: [id_pilar], references: [id_pilar])
+  usuario Usuarios @relation(fields: [id_usuario], references: [id_usuario])  
+}
+
+model Analises_Pilares{
+  id Int @id @default(autoincrement())
+  id_analise Int
+  id_pilar Int
+  id_cartao Int
+  analise Analises @relation(fields: [id_analise], references: [id_analise])
+  cartao Cartoes @relation(fields: [id_cartao], references: [id_cartao])
+  pilar Pilares @relation(fields: [id_pilar], references: [id_pilar])
+}
+
 model Pilares {
   id_pilar Int @id @default(autoincrement())
   nome_pilar String
   cartoes_pilares Cartoes_Pilares[]
+  usuario_pilares Usuarios_Pilares[]
+  analises_pilares Analises_Pilares[]
 }
+
+model Analistas {
+  id_analista Int @unique 
+  id_setor_analise Int?
+}
+
+model AnalisesPontuacao {
+  id Int @id @default(autoincrement())
+  id_cartao Int
+  id_analise Int
+  pontuacao Int
+  cartao Cartoes @relation(fields: [id_cartao], references: [id_cartao])
+  analise Analises @relation(fields: [id_analise], references: [id_analise])
+}
+
+

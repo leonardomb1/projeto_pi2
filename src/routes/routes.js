@@ -3,17 +3,26 @@ import { Router } from 'express'
 //CONTROLLER
 import SetorController from '../controller/setores.controller.js'
 import AnaliseController from '../controller/analises.controller.js'
-import AnalistaController from '../controller/analistas.controller.js'
 import FuncionarioController from '../controller/funcionarios.controller.js'
 import CartoesController from '../controller/cartoes.controller.js'
 import UsuarioController from '../controller/usuarios.controller.js'
+import CartoesPilaresController from '../controller/cartoes_pilares.controller.js'
 import ErrorController from '../controller/error.controller.js'
+import PilarController from '../controller/pilares.controller.js'
+import AnalisePilaresController from '../controller/analises_pilares.controller.js'
+import AnalisePontuacaoController from '../controller/analises_pontuacao.controller.js'
 
 //VALIDATIONS
 import {getOneSetorValidation, createSetorValidation, updateSetorValidation} from '../validations/setor.validation.js'
 import {getOneFuncValidation, createFuncValidation, updateFuncValidation} from '../validations/funcionarios.validation.js'
-import {getOneUserValidation, createUserValidation, updateUserValidation} from '../validations/usuarios.validation.js'
-import {getOneCartaoValidation, createCartaoValidation, updateCartaoValidation} from "../validations/cartoes.validation.js"
+import {getOneUserValidation, createUserValidation, updateUserValidation, loginUserValidation} from '../validations/usuarios.validation.js'
+import {getOneCartaoValidation, createCartaoValidation, updateCartaoValidation, getCartaoByUserValidation, getByPilarValidation} from "../validations/cartoes.validation.js"
+import {getOneAnaliseValidation, createAnaliseValidation, updateAnaliseValidation, getAnaliseByCartaoValidation} from "../validations/analises.validation.js"
+import { getOnePontuacaoValidation, createPontuacaoValidation, updatePontuacaoValidation } from "../validations/analise_pontuacao.validation.js"
+import { createCartaoPilarValidation } from "../validations/cartoes_pilares.validation.js"
+import { createAnalisePilarValidation } from "../validations/analises_pilares.validation.js"
+import { getOnePilarValidation} from "../validations/pilares.validation.js"
+
 
 const router = Router()
 // router.get('*', ErrorController.index)
@@ -27,17 +36,10 @@ router.delete('/setor/:idSetor', getOneSetorValidation, SetorController.delete)
 
 // Rotas de Analises
 router.get('/analises', AnaliseController.index)
-router.get('/analises/:idAnalise', AnaliseController.getOneById)
-router.post('/analises', AnaliseController.create)
-router.put('/analises/:idAnalise', AnaliseController.update)
-router.delete('/analises/:idAnalise', AnaliseController.delete)
-
-// Rotas de Analistas
-router.get('/analistas', AnalistaController.index)
-router.get('/analistas/:idAnalista', AnalistaController.getOneById)
-router.post('/analistas', AnalistaController.create)
-router.put('/analistas/:idAnalista', AnalistaController.update)
-router.delete('/analistas/:idAnalista', AnalistaController.delete)
+router.get('/analises/:idAnalise', getOneAnaliseValidation, AnaliseController.getOneById)
+router.post('/analises',createAnaliseValidation, AnaliseController.create)
+router.put('/analises/:idAnalise', updateAnaliseValidation, AnaliseController.update)
+router.delete('/analises/:idAnalise', getOneAnaliseValidation, AnaliseController.delete)
 
 // Rotas de Funcionarios
 router.get('/funcionarios', FuncionarioController.index)
@@ -51,13 +53,34 @@ router.get('/cartoes', CartoesController.index)
 router.get('/cartoes/:idCartao', getOneCartaoValidation, CartoesController.getOneById)
 router.post('/cartoes', createCartaoValidation, CartoesController.create)
 router.put('/cartoes/:idCartao', updateCartaoValidation, CartoesController.update)
+router.get('/cartoes/user/:idUsuario', getCartaoByUserValidation, CartoesController.getManyByUserId)
 router.delete('/cartoes/:idCartao', getOneCartaoValidation, CartoesController.delete)
+router.get('/cartoes/funcSetor/:idCartao', getOneCartaoValidation, CartoesController.mostraSetorFuncionarioPeloCartao)
+router.get('/cartoes/status/:idCartao', getOneCartaoValidation, CartoesController.mostraStatusCartao)
+router.post('/cartoes/pilares', getByPilarValidation, CartoesController.mostraCartoesPorNomePilar)
+router.get('/cartoes/aprovacoes/:idCartao', getOneCartaoValidation, CartoesController.mostraAprovadocoesPeloCartao)
 
 // Rotas de Usuarios
 router.get('/usuarios', UsuarioController.index)
 router.get('/usuarios/:idUsuario', getOneUserValidation, UsuarioController.getOneById)
 router.post('/usuarios', createUserValidation, UsuarioController.create)
+router.post('/usuarios/login', loginUserValidation, UsuarioController.loginUser )
 router.put('/usuarios/:idUsuario', updateUserValidation, UsuarioController.update)
 router.delete('/usuarios/:idUsuario', getOneUserValidation, UsuarioController.delete)
 
+// Rotas dos Pilares
+router.get('/pilares', PilarController.index)
+router.get('/pilares/:idPilar', getOnePilarValidation, PilarController.getOneById)
+router.post('/pilares/buscar', PilarController.getByList)
+
+// Rota do Cartão-Pilar
+router.post('/cartaoPilar', createCartaoPilarValidation, CartoesPilaresController.create )
+
+// Rota da Analise-Pilar
+router.post('/analisesPilar', createAnalisePilarValidation, AnalisePilaresController.create)
 export default router
+
+//Rota da Analise-pontuacao
+router.get('/analisePontuacao', createAnalisePilarValidation, AnalisePontuacaoController.create)
+router.get('/analisePontuacao/:id_analisePontuacao', getOnePontuacaoValidation,AnalisePontuacaoController.index)
+router.post('/analisePontuacao', updatePontuacaoValidation, AnalisePontuacaoController.update)

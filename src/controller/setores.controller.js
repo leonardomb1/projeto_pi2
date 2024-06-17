@@ -39,8 +39,8 @@ export default class SetorController {
       res.status(200).json(retorno)
     }
     else {
-      retorno = new returnClass("Erro Interno Servidor", 500, false, true, undefined)
-      res.status(500).json(retorno)
+      retorno = new returnClass("Não encontrado", 404, false, true, undefined)
+      res.status(404).json(retorno)
     }
   }
 
@@ -61,7 +61,7 @@ export default class SetorController {
       res.json(createdSetor)
     } catch(error){
       retorno = new returnClass("Este setor já está cadastrado!", 409, false, true, undefined)
-      return res.status(404).json(retorno)
+      return res.status(409).json(retorno)
     }
     }
 
@@ -127,7 +127,7 @@ export default class SetorController {
     } catch (error) {
       console.log(error)
       retorno = new returnClass("Erro interno do Servidor", 500, false, true, undefined)
-      return res.status(404).json(retorno)
+      return res.status(500).json(retorno)
     }
   }
 }
