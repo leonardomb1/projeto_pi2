@@ -63,8 +63,8 @@ export default class CartoesController {
     const { idCartao } = req.params
     let retorno = {}
 
-    const statusCartao = await Generic.$queryRaw`;
-      WITH MINIMO AS (
+    const statusCartao = await Generic.$queryRaw`
+      ;WITH MINIMO AS (
           SELECT
               id_cartao,
               COUNT(1) as qt_min
@@ -97,7 +97,7 @@ export default class CartoesController {
       SELECT
           id_cartao,
           CASE 
-              WHEN qt_min = qt_aprovado + qt_reprovado THEN
+              WHEN qt_min <= qt_aprovado + qt_reprovado THEN
                   CASE
                       WHEN qt_aprovado > qt_reprovado THEN 'Aprovado'
                       ELSE 'Reprovado'
@@ -108,8 +108,8 @@ export default class CartoesController {
           SELECT
               "MIN".id_cartao,
               qt_min,
-              CASE WHEN qt_aprovado IS NULL THEN 0 END AS qt_aprovado,
-              CASE WHEN qt_reprovado IS NULL THEN 0 END AS qt_reprovado
+              CASE WHEN qt_aprovado IS NULL THEN 0 ELSE qt_aprovado END AS qt_aprovado,
+              CASE WHEN qt_reprovado IS NULL THEN 0 ELSE qt_reprovado END AS qt_reprovado
           FROM MINIMO AS "MIN"
           LEFT OUTER JOIN APROVADO AS "APR"
               ON  "APR".id_cartao = "MIN".id_cartao
@@ -273,7 +273,7 @@ export default class CartoesController {
     }
 
     let listaCartoes = Array.from(uniqueCartoes.values())
-    
+
     if (listaCartoes.length === 0) {
       retorno = new returnClass("Não encontrado", 404, false, true, undefined)
       return res.status(404).json(retorno)
