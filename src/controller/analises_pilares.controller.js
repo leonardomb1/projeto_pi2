@@ -10,11 +10,10 @@ export default class AnalisePilaresController {
           return res.status(400).json({erros: erros.array()})
         }
       
-        const { id_analise, id_pilar } = req.body
-        console.log(req.body)
+        const { id_analise, id_pilar, id_cartao } = req.body
         let retorno = {}
         let qtdeIgnorada = 0
-        console.log("aqui1")
+
         for (const pilar of id_pilar) {
             const procuraSeAprovado = await Generic.$queryRaw`
                 ;WITH base AS (
@@ -26,14 +25,14 @@ export default class AnalisePilaresController {
                         FROM "Analises" AS "AN"
                         WHERE 
                             "AN".id_cartao = "CA".id_cartao AND
-                            "AN".id_analise = ${id_analise}
+                            "CA".id_cartao = ${id_cartao}
                     )
                 )
 
                 SELECT
                     *
                 FROM base AS "ba"
-                LEFT OUTER JOIN "Analises" AS "AN"
+                INNER JOIN "Analises" AS "AN"
                     ON  "AN".id_cartao = "ba".id_cartao
                 INNER JOIN "Analises_Pilares" AS "ANP" 
                     ON "ANP".id_analise = "AN".id_analise 
@@ -47,7 +46,8 @@ export default class AnalisePilaresController {
             await AnalisePilares.create({
                 data: {
                     id_analise: id_analise,
-                    id_pilar: pilar
+                    id_pilar: pilar,
+                    id_cartao: id_cartao
                 }
             })
         }
