@@ -235,7 +235,7 @@ export default class CartoesController {
 
     for (const pilar of nome_pilar) {
       const cartoes = await Generic.$queryRaw`
-        WITH CARTOES_PED AS (
+        ;WITH BASE AS (
             SELECT
                 "CA".*,
                 array_agg("PIL".nome_pilar) AS nome_pilar
@@ -244,15 +244,6 @@ export default class CartoesController {
                 ON  "CAP".id_cartao = "CA".id_cartao
             INNER JOIN "Pilares" AS "PIL"
                 ON  "PIL".id_pilar = "CAP".id_pilar
-            WHERE NOT EXISTS (
-                SELECT 1
-                FROM "Analises" AS "AN"
-                INNER JOIN "Analises_Pilares" AS "ANP"
-                    ON  "AN".id_analise = "ANP".id_analise
-                WHERE
-                    "AN".id_cartao = "CA".id_cartao AND
-                    "ANP".id_pilar = "CAP".id_pilar
-            )
             GROUP BY
                 "CA".id_cartao,
                 "CA".id_usuario,
@@ -263,15 +254,17 @@ export default class CartoesController {
                 "CA".data_cartao
         )
 
-        SELECT
-            "PED".*
-        FROM CARTOES_PED AS "PED"
-        WHERE EXISTS (
-            SELECT 1 FROM "Cartoes_Pilares" AS "CAP"
-            INNER JOIN "Pilares" AS "PIL" 
-                ON  "PIL".id_pilar = "CAP".id_pilar AND
-                nome_pilar = ${pilar}
-            WHERE "PED".id_cartao = "CAP".id_cartao
+        SELECT  
+            *
+        FROM BASE
+        WHERE id_cartao NOT IN (
+            SELECT "AN".id_cartao
+            FROM "Analises" AS "AN"
+            INNER JOIN "Analises_Pilares" AS "ANP"
+                ON  "AN".id_analise = "ANP".id_analise
+            INNER JOIN "Pilares" AS "PIL"
+                ON  "PIL".id_pilar = "ANP".id_pilar AND
+                    "PIL".nome_pilar = ${pilar}
         );`
 
       for (const cartao of cartoes) {
@@ -280,10 +273,7 @@ export default class CartoesController {
     }
 
     let listaCartoes = Array.from(uniqueCartoes.values())
-
-    console.log(nome_pilar)
-    console.log(listaCartoes)
-
+    
     if (listaCartoes.length === 0) {
       retorno = new returnClass("Não encontrado", 404, false, true, undefined)
       return res.status(404).json(retorno)
